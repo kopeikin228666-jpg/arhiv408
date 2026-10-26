@@ -32,4 +32,7 @@ if __name__=='__main__':
         open('/root/.tg/chat_id','w').write(str(ids[-1]));print('ok')
     elif a[0]=='text': print(call('sendMessage',{'chat_id':chat(),'text':a[1],'parse_mode':'HTML','disable_web_page_preview':True})['ok'])
     elif a[0]=='video': print(call('sendVideo',{'chat_id':chat(),'caption':a[2] if len(a)>2 else '','parse_mode':'HTML'},{'video':a[1]})['ok'])
+    elif a[0]=='ask':  # tg.py ask <id> "вопрос" — кнопки ДА/НЕТ
+        print(call('sendMessage',{'chat_id':chat(),'text':a[2],'parse_mode':'HTML','reply_markup':{'inline_keyboard':[[{'text':'✅ ДА','callback_data':a[1]+':yes'},{'text':'❌ НЕТ','callback_data':a[1]+':no'}]]}})['ok'])
+    elif a[0]=='audio': print(call('sendAudio',{'chat_id':chat(),'caption':a[2] if len(a)>2 else '','parse_mode':'HTML'},{'audio':a[1]})['ok'])
     elif a[0]=='photo': print(call('sendPhoto',{'chat_id':chat(),'caption':a[2] if len(a)>2 else '','parse_mode':'HTML'},{'photo':a[1]})['ok'])

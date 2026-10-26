@@ -19,6 +19,14 @@ while time.time()<deadline:
     got=[]
     for u in r.get('result',[]):
         off=u['update_id']+1;open(OFF,'w').write(str(off))
+        cq=u.get('callback_query')
+        if cq and str(cq.get('from',{}).get('id'))==ME:
+            rec={'t':int(time.time()),'button':cq.get('data'),'text':'[кнопка] '+str(cq.get('data'))};got.append(rec)
+            open('/root/.tg/inbox.jsonl','a').write(json.dumps(rec,ensure_ascii=False)+'\n')
+            try:
+                req=urllib.request.Request(API+'answerCallbackQuery',json.dumps({'callback_query_id':cq['id'],'text':'Принято ✅'}).encode(),{'Content-Type':'application/json'});urllib.request.urlopen(req,timeout=20)
+            except Exception: pass
+            continue
         m=u.get('message') or {}
         if str(m.get('chat',{}).get('id'))!=ME: continue
         txt=m.get('text') or m.get('caption') or ('[фото]' if m.get('photo') else '[вложение]')
