@@ -120,6 +120,11 @@ footer{color:var(--dim);font-size:12px}
 .honor{background:#0c0b06;border:2px solid #6a5a1a;padding:12px;display:grid;gap:6px}
 .honor ol{margin:0;padding-left:20px;display:grid;gap:5px;font-size:13px}
 .honor b{color:#e8c45a}
+.aud{background:#0d0b0f;border:2px solid #4a2a5a;padding:12px;display:grid;gap:8px}
+.aud .c{background:var(--panel);border:1px solid var(--line);padding:9px 10px;display:grid;gap:6px;font-size:13px}
+.aud .who{font-weight:600} .aud .m{color:var(--dim);font-size:12px}
+.aud .say{border-left:3px solid #a46fb0;padding-left:8px;white-space:pre-wrap}
+.aud .boss{border-left:3px solid var(--amber);padding-left:8px}
 </style>
 
 <div class="wrap">
@@ -180,6 +185,11 @@ footer{color:var(--dim);font-size:12px}
   <section class="honor">
     <h2>ДОСКА ПОЧЁТА · ★ ТОЛЬКО ЗА ОТК 9+/10 С ПЕРВОГО РАЗА</h2>
     <ol id="honor"></ol>
+  </section>
+
+  <section class="aud">
+    <h2>ПРИЁМНАЯ БОССА · УВОЛЕННЫЕ ПРОСЯТСЯ НАЗАД</h2>
+    <div id="aud"><p class="empty">Пока никто не приходил.</p></div>
   </section>
 
   <section class="shame">
@@ -629,6 +639,13 @@ function renderShame(){
 }
 
 let approvals=[],DB=null;
+let auds=[];
+function renderAud(){const b=document.getElementById('aud');if(!b)return;
+  if(!auds.length){b.replaceChildren(el('p','empty','Пока никто не приходил.'));return}
+  b.replaceChildren(...auds.map(x=>{const c=el('div','c');c.append(el('div','who',(x.time||'')+' · '+(x.name||x.agent)+' пришёл на аудиенцию к боссу'));
+    (x.dialog||[]).forEach(d=>c.append(el('div',d.from==='boss'?'boss':'say',(d.from==='boss'?'Босс: ':(x.name||'')+': ')+d.text)));
+    c.append(el('div','m',x.verdict==='back'?'✅ Босс вернул на работу'+(x.terms?' · '+x.terms:''):x.verdict==='no'?'❌ Босс: пусть катится обратно':'⏳ Ждёт решения босса (кнопки в Телеге)'));return c}))}
+
 function renderHonor(){const ol=document.getElementById('honor');if(!ol)return;const hs=agents.filter(a=>a.stars>0).sort((a,b)=>b.stars-a.stars);
   if(!hs.length){ol.replaceChildren(el('li','empty','Пока никого. Звезду дают за работу, принятую ОТК на 9+ с первого раза. За «нормально» звёзд не дают.'));return}
   ol.replaceChildren(...hs.map(a=>{const li=el('li');li.append(el('b',null,'★'.repeat(Math.min(a.stars,5))+' '),document.createTextNode((a.name||'')+(a.medal?' — '+a.medal:'')));return li}))}
@@ -779,6 +796,7 @@ function renderAppr(){
   db.doc('meta/goal').onSnapshot(s=>{goal=s.exists?s.data():null;renderBoard()},()=>{});
   db.collection('media').orderBy('order','desc').onSnapshot(s=>{media=s.docs.map(d=>Object.assign({_id:d.id},d.data()));renderLib()},()=>{});
   db.collection('summons').orderBy('at','desc').limit(20).onSnapshot(s=>{summons=s.docs.map(d=>Object.assign({_id:d.id},d.data()));renderCarpet()},()=>{});
+  db.collection('audiences').orderBy('at','desc').limit(20).onSnapshot(s=>{auds=s.docs.map(d=>Object.assign({_id:d.id},d.data()));renderAud()},()=>{});
   db.collection('approvals').orderBy('num').onSnapshot(s=>{approvals=s.docs.map(d=>Object.assign({_id:d.id},d.data()));renderAppr()},()=>{});
   db.doc('meta/now').onSnapshot(s=>{
     const d=s.exists?s.data():null,p=document.getElementById('phase');p.replaceChildren();
