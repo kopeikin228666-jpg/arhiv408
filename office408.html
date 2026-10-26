@@ -133,8 +133,9 @@ footer{color:var(--dim);font-size:12px}
     <button type="button" data-view="studio" id="v-studio">СТУДИЯ 408</button>
     <button type="button" data-view="insta" id="v-insta">ОТДЕЛ INSTAGRAM</button>
     <button type="button" data-view="cabinet" id="v-cabinet">КАБИНЕТ ДИРЕКТОРА</button>
+    <button type="button" data-view="it" id="v-it">АЙТИШНИК</button>
   </div>
-  <div class="stage" id="stage"><canvas id="game" width="720" height="230" aria-label="Офис: агенты за работой"></canvas></div>
+  <div class="stage" id="stage"><canvas id="game" width="880" height="230" aria-label="Офис: агенты за работой"></canvas></div>
 
   <div class="cols">
     <section class="file" id="file" aria-live="polite"><p class="empty">Нажмите на фигурку в офисе или на имя в списке, чтобы открыть дело агента.</p></section>
@@ -189,8 +190,8 @@ footer{color:var(--dim);font-size:12px}
 </div>
 
 <script>
-const W=720,H=230,AISLE=124,DOOR=[330,346],DOOR2=[560,576],DOORX=[338,568];
-const VIEWS={all:[0,W],studio:[0,340],insta:[324,584],cabinet:[552,W]};
+const W=880,CW=720,H=230,AISLE=124,DOOR=[330,346],DOOR2=[560,576],DOOR3=[720,736],DOORX=[338,568,728];
+const VIEWS={all:[0,W],studio:[0,340],insta:[324,584],cabinet:[552,736],it:[712,880]};
 const cv=document.getElementById('game'),cx=cv.getContext('2d');
 const STATUS={working:['РАБОТАЕТ','#c99a3c'],done:['СДАЛ ОТЧЁТ','#5fa77a'],idle:['ЖДЁТ','#86938d'],board:['НА СОВЕТЕ','#ba302a'],stopped:['ОСТАНОВЛЕН','#5d6662']};
 const TRIM=['#ba302a','#c99a3c','#5fa77a','#6f8fb8','#a46fb0','#c9c9c9','#d07a3a','#4fb0a8','#b85c7a','#8a9a3a','#c95b8c','#7ab0d0'];
@@ -204,17 +205,18 @@ const PATROL=[[14,AISLE],[160,AISLE],[300,AISLE],[200,206],[60,206],[110,AISLE]]
 const D_PATROL=[[530,AISLE],[400,AISLE],[400,206],[520,206],[470,AISLE]];
 const BOSS={overseer:1,demoness:1,deputy:1};
 const DEP_PATROL=[[640,AISLE],[560,AISLE],[450,AISLE],[400,206],[300,AISLE],[160,AISLE],[60,206],[200,206],[338,AISLE]];
-const YELLS=['Почему стоим?! Работать!','Покажи, что сделал за час. Сейчас.','Это что, 8,5 из 10? Переделать!','Надзиратель, ты сам-то проверял?!','Демоница, разнос раздаёшь — а сама?','Статус обнови, живо!','Факты где? Источник покажи!','Машина «НА СВО» уже заводится…','Кофе потом. Сначала ролик.','ОТК, не спи! Кто следующий на проверку?'];
+const YELLS=['Хули сидим?! Работать, блядь!','Покажи, что сделал за час. Нихуя? Я так и думал.','Это что за хуйня? 8,5 из 10 или на СВО!','Надзиратель, ты сам-то, блядь, проверял?!','Демоница, разносы раздаёшь, а сама нихуя не проверила!','Статус обнови, ёб твою мать!','Источник где, блядь? Покажи источник!','Машина «НА СВО» уже заводится, сука…','Кофе, блядь? Какой нахуй кофе?!','ОТК, не спать, блядь! Кто следующий?','Айтишник, бот где, блядь?','Двигай жопой, дедлайн горит!'];
 const WANDER=[[60,AISLE],[180,AISLE],[400,AISLE],[500,AISLE],[120,206],[450,206]];
 let agents=[],sprites={},prev={},selected=null,t0=performance.now(),bubbleFor=null,bubbleT=0;
 let reprimands=[],actives={},active=null,seenRep=new Set(),firstRep=true,view='all',vx0=0,vx1=W,hearts=[];
 const dust=[...Array(40)].map(()=>[Math.random()*W,50+Math.random()*170,Math.random()*6]);
 
 function el(tag,cls,text){const e=document.createElement(tag);if(cls)e.className=cls;if(text!=null)e.textContent=text;return e}
-const roomOf=x=>x<DOORX[0]?'studio':(x<DOORX[1]?'insta':'cabinet');
-const ROOMS=['studio','insta','cabinet'];
+const roomOf=x=>x<DOORX[0]?'studio':(x<DOORX[1]?'insta':(x<DOORX[2]?'cabinet':'it'));
+const ROOMS=['studio','insta','cabinet','it'];
 const C_DESK=[624,74];
 function deskOf(a,i){
+  if(a.room==='it')return [DOOR3[1]+95,150];
   if(a.room==='cabinet')return C_DESK;
   if(a.room==='insta')return I_DESKS[(a.seat??i)%I_DESKS.length];
   return S_DESKS[(a.order??i)%S_DESKS.length];
@@ -225,6 +227,7 @@ function seatFor(a,i){
   if(a.kind==='deputy')return {x:C_DESK[0]+64,y:C_DESK[1]+36};
   if(a.status==='board'){const k=agents.filter(b=>b.status==='board').indexOf(a);const s=SEATS[k%SEATS.length];return {x:s[0],y:s[1]}}
   if(a.visit){const t=agents.find(b=>b._id===a.visit);if(t&&t!==a){if(t.room==='cabinet')return {x:C_DESK[0]+40,y:C_DESK[1]+50,visiting:t._id};const d=deskOf(t,agents.indexOf(t));return {x:d[0]+34,y:d[1]+28,visiting:t._id}}}
+  if(a.room==='it')return {x:DOOR3[1]+110,y:178};
   if(a.room==='cabinet'&&a.order!==0)return {x:C_DESK[0]+64,y:C_DESK[1]+36};
   if(a.room==='cabinet')return {x:C_DESK[0]+24,y:C_DESK[1]+14};
   const d=deskOf(a,i);
@@ -299,9 +302,9 @@ function insta(t,busy){
 }
 function cabinet(t){
   const X=DOOR2[1];
-  px(X,0,W-X,H,'#140f0c');px(X,0,W-X,48,'#1d1510');px(X,46,W-X,2,'#3a2a1c');
-  for(let x=X;x<W;x+=6)px(x,0,1,46,'#21170f');                                     // wood panelling
-  for(let y=50;y<H;y+=12)px(X,y,W-X,1,'#19120d');
+  px(X,0,CW-X,H,'#140f0c');px(X,0,CW-X,48,'#1d1510');px(X,46,CW-X,2,'#3a2a1c');
+  for(let x=X;x<CW;x+=6)px(x,0,1,46,'#21170f');                                     // wood panelling
+  for(let y=50;y<H;y+=12)px(X,y,CW-X,1,'#19120d');
   txt('КАБИНЕТ ДИРЕКТОРА',X+6,37,6,'#c99a3c');
   // night city window with rain
   const flash=((t/9000)%1)>0.985;
@@ -317,8 +320,8 @@ function cabinet(t){
       const dx=mx+((sp.x-a0)/(a1-a0))*mw,dy=my+((sp.y-48)/(H-48))*mh;const c=a.kind==='overseer'?'#ba302a':a.kind==='demoness'?'#e0203a':(STATUS[a.status]||STATUS.idle)[1];px(dx,dy,2,2,c)}
     if((t/600|0)%2)px(mx+mw-3,my+1,2,2,'#ba302a')});                                   // REC
   // bookshelf of case files + safe
-  px(W-24,52,20,60,'#2a1e14');for(let r=0;r<5;r++){px(W-22,54+r*12,16,1,'#3a2a1c');for(let k=0;k<5;k++)px(W-22+k*3,55+r*12,2,10,['#5a0f2a','#c9b98f','#1b2320','#7a1030','#3a2e25'][(k+r)%5])}
-  px(W-24,190,20,22,'#2b2f30');px(W-22,192,16,18,'#3a3f42');cx.strokeStyle='#86938d';cx.lineWidth=1;cx.beginPath();cx.arc(W-14,201,3,0,7);cx.stroke();
+  px(CW-24,52,20,60,'#2a1e14');for(let r=0;r<5;r++){px(CW-22,54+r*12,16,1,'#3a2a1c');for(let k=0;k<5;k++)px(CW-22+k*3,55+r*12,2,10,['#5a0f2a','#c9b98f','#1b2320','#7a1030','#3a2e25'][(k+r)%5])}
+  px(CW-24,190,20,22,'#2b2f30');px(CW-22,192,16,18,'#3a3f42');cx.strokeStyle='#86938d';cx.lineWidth=1;cx.beginPath();cx.arc(CW-14,201,3,0,7);cx.stroke();
   // red rug, big desk, banker's lamp, leather chair, visitor chair
   px(X+20,120,104,70,'#3a0f14');px(X+24,124,96,62,'#4a1418');px(X+26,126,92,58,'#3a0f14');
   const [cdx,cdy]=C_DESK;px(cdx+14,cdy-14,20,22,'#2a1a14');px(cdx+16,cdy-12,16,18,'#3a2418');px(cdx+15,cdy-15,18,2,'#4a2e1e');   // tall leather chair
@@ -334,7 +337,24 @@ function cabinetDesk(t){
   const reports=agents.filter(a=>a.status==='done'&&!BOSS[a.kind]).length;for(let k=0;k<Math.min(reports,6);k++)px(dx+52,dy+12-k,6,1,k%2?'#e2dbc8':'#c9b98f'); // the stack of reports grows
   px(dx+38,dy+52,12,3,'#2a1a14');px(dx+38,dy+44,12,8,'#3a2418');                         // visitor chair
 }
+function itRoom(t){
+  const X=DOOR3[1];
+  px(X,0,W-X,H,'#0a0f12');px(X,0,W-X,48,'#0e161b');px(X,46,W-X,2,'#1f5a6a');
+  for(let y=50;y<H;y+=8)for(let x=X;x<W;x+=8)px(x,y,1,1,'#12202a');
+  txt('КАБИНЕТ АЙТИШНИКА',X+6,37,6,'#4fb0a8');
+  for(let r=0;r<3;r++){const rx=X+8+r*22;px(rx,52,18,64,'#111a1f');px(rx+1,53,16,62,'#0b1216');
+    for(let k=0;k<10;k++){px(rx+3,56+k*6,12,4,'#18252c');const on=((t/(180+r*40+k*13))|0)%3;px(rx+4,57+k*6,1,1,on?'#5fa77a':'#0b1216');px(rx+6,57+k*6,1,1,on===2?'#c99a3c':'#0b1216');px(rx+12,57+k*6,2,1,'#4fb0a8')}}
+  // big wall screen: telegram feed
+  px(X+76,6,64,30,'#0b1216');px(X+78,8,60,26,'#071016');
+  for(let k=0;k<4;k++){const w=14+((k*17+(t/700|0))%36);px(X+80+((k%2)?10:0),10+k*6,w,4,(k%2)?'#1f5a6a':'#2a3a44')}
+  if((t/500|0)%2)px(X+132,9,3,3,'#4fb0a8');
+  // desk with 3 monitors
+  px(X+40,150,100,12,'#1b2228');px(X+40,162,100,3,'#10161a');
+  for(let k=0;k<3;k++){const mx=X+46+k*30;px(mx,132,26,16,'#111a1f');px(mx+2,134,22,12,'#030607');for(let r=0;r<4;r++)px(mx+3,135+r*3,3+(((t/90)|0)+r*5+k*3)%17,1,['#5fa77a','#4fb0a8','#c99a3c','#86938d'][(r+k)%4])}
+  px(X+58,176,24,4,'#16303a');px(X+62,170,16,6,'#1f5a6a');
+}
 function wall(){
+  px(DOOR3[0],0,DOOR3[1]-DOOR3[0],H,'#141a1c');px(DOOR3[0]+2,0,DOOR3[1]-DOOR3[0]-4,H,'#1d2528');px(DOOR3[0],AISLE-22,DOOR3[1]-DOOR3[0],34,'#0a0d0e');px(DOOR3[0],AISLE-24,DOOR3[1]-DOOR3[0],2,'#4fb0a8');
   px(DOOR2[0],0,DOOR2[1]-DOOR2[0],H,'#1a1814');px(DOOR2[0]+2,0,DOOR2[1]-DOOR2[0]-4,H,'#26221c');
   px(DOOR2[0],AISLE-22,DOOR2[1]-DOOR2[0],34,'#0d0c0a');px(DOOR2[0],AISLE-24,DOOR2[1]-DOOR2[0],2,'#c99a3c');
   px(DOOR[0],0,DOOR[1]-DOOR[0],H,'#1a201e');px(DOOR[0]+2,0,DOOR[1]-DOOR[0]-4,H,'#232b28');
@@ -511,7 +531,7 @@ function loop(now){
   const dt=Math.min(.1,(now-last)/1000);last=now;const t=now-t0;
   step(dt);
   cx.setTransform(1,0,0,1,-vx0,0);cx.imageSmoothingEnabled=false;
-  studio(t);insta(t,agents.some(a=>a.room==='insta'&&a.status==='working'));cabinet(t);wall();dustAll(t);
+  studio(t);insta(t,agents.some(a=>a.room==='insta'&&a.status==='working'));cabinet(t);itRoom(t);wall();dustAll(t);
   S_DESKS.forEach((d,i)=>desk(d,i,agents.find(a=>(!a.room||a.room==='studio')&&!BOSS[a.kind]&&(a.order??-1)===i),t,false,false));
   I_DESKS.forEach((d,i)=>desk(d,i,agents.find(a=>a.room==='insta'&&(a.seat??-1)===i),t,false,true));
   [...agents].filter(a=>sprites[a._id]).sort((a,b)=>sprites[a._id].y-sprites[b._id].y).forEach(a=>hooded(sprites[a._id],a,t));
@@ -536,7 +556,7 @@ function bubble(now){
   if(sc.length){const [boss,v]=sc[((now/3500)|0)%sc.length],s=sprites[boss._id];
     if(s.sx!=null){const dem=boss.kind==='demoness';bub.classList.toggle('demon',dem);bub.classList.toggle('boss',!dem);
       const tg=agents.find(a=>a._id===v.target);const key=boss._id+v.text;
-      if(bub.dataset.k!==key){bub.replaceChildren(el('b',null,(dem?'ДЕМОНИЦА → ':'НАДЗИРАТЕЛЬ → ')+((tg&&tg.name)||'').toUpperCase()),document.createTextNode(v.text));bub.dataset.k=key}
+      if(bub.dataset.k!==key){bub.replaceChildren(el('b',null,((boss.name||(dem?'Демоница':'Надзиратель')).toUpperCase()+' → ')+((tg&&tg.name)||'').toUpperCase()),document.createTextNode(v.text));bub.dataset.k=key}
       place(s);return}}
   bub.classList.remove('boss','demon');
   let who=selected?agents.find(a=>a._id===selected):null;
@@ -566,12 +586,12 @@ function renderPanels(){
       const sw=el('i');sw.style.background=(sprites[a._id]||{}).trim||'#86938d';const st=STATUS[a.status]||STATUS.idle;
       b.append(sw,el('span',null,(a.name||'Агент')+' · '+(a.role||'')),el('em',a.status||'idle',st[0]));b.onclick=()=>pick(a._id);return b};
     const cb=agents.filter(a=>a.room==='cabinet'),st=agents.filter(a=>!a.room||a.room==='studio'),ig=agents.filter(a=>a.room==='insta');
-    ro.replaceChildren(...(cb.length?[el('h3',null,'КАБИНЕТ ДИРЕКТОРА'),...cb.map(mk)]:[]),el('h3',null,'СТУДИЯ 408'),...st.map(mk),...(ig.length?[el('h3',null,'ОТДЕЛ INSTAGRAM'),...ig.map(mk)]:[]))}
+    ro.replaceChildren(...(cb.length?[el('h3',null,'КАБИНЕТ ДИРЕКТОРА'),...cb.map(mk)]:[]),el('h3',null,'СТУДИЯ 408'),...st.map(mk),...(ig.length?[el('h3',null,'ОТДЕЛ INSTAGRAM'),...ig.map(mk)]:[]),...(agents.some(a=>a.room==='it')?[el('h3',null,'КАБИНЕТ АЙТИШНИКА'),...agents.filter(a=>a.room==='it').map(mk)]:[]))}
   const f=document.getElementById('file');const a=agents.find(x=>x._id===selected);
   if(!a){f.replaceChildren(el('p','empty','Нажмите на фигурку в офисе или на имя в списке, чтобы открыть дело агента.'));return}
   const st=STATUS[a.status]||STATUS.idle;const dl=el('dl');
   const v=a.visit&&agents.find(b=>b._id===a.visit);
-  [['Сейчас',a.doing],['Где',v?'у стола: '+v.name:({insta:'Отдел Instagram',cabinet:'Кабинет директора'}[a.room]||'Студия 408')],['Задача',a.task],['Итог',a.note],['Обновлено',a.updated]].forEach(([k,x])=>{if(x){dl.append(el('dt',null,k),el('dd',null,x))}});
+  [['Сейчас',a.doing],['Где',v?'у стола: '+v.name:({insta:'Отдел Instagram',cabinet:'Кабинет директора',it:'Кабинет айтишника'}[a.room]||'Студия 408')],['Задача',a.task],['Итог',a.note],['Обновлено',a.updated]].forEach(([k,x])=>{if(x){dl.append(el('dt',null,k),el('dd',null,x))}});
   const n=reprimands.filter(r=>r.target===a._id).length;if(n)dl.append(el('dt',null,'Разносов'),el('dd',null,String(n)));
   f.replaceChildren(el('div','nm',a.name||'Агент'),el('div','rl',a.role||''),el('span','pill '+(a.status||'idle'),st[0]),dl);
 }
