@@ -536,7 +536,11 @@ function step(dt){
     else if(!bs.way.length){const P=boss.kind==='demoness'?D_PATROL:(boss.kind==='deputy'||boss._id==='qc'||boss._id==='factcop')?DEP_PATROL:PATROL;bs.pause=(bs.pause||0)-dt;if(bs.pause<=0){bs.patrolK=((bs.patrolK||0)+1)%P.length;const p=P[bs.patrolK];route(bs,p[0],p[1]);bs.pause=1.2+Math.random()*2.5}}
     move(bs,dt,boss.kind==='demoness'?26:boss.kind==='deputy'?44:30);
   }
-  for(const a of agents){const s=sprites[a._id];if(!s||BOSS[a.kind])continue;
+  {const ch=chief(),cs=ch&&sprites[ch._id];if(cs){const rnd=new Date().getMinutes()<4||(performance.now()-t0<45000&&performance.now()-t0>8000);
+    if(rnd){if(!cs.way.length){cs.rp=(cs.rp||0)+1;const pt=DEP_PATROL[cs.rp%DEP_PATROL.length];route(cs,pt[0],pt[1]);cs.inRound=true}}
+    else if(cs.inRound&&!cs.way.length){cs.inRound=false;route(cs,cs.goal.x,cs.goal.y)}
+    move(cs,dt,34)}}
+  for(const a of agents){const s=sprites[a._id];if(!s||BOSS[a.kind]||a===chief())continue;
     if(s.errand&&!s.way.length){s.errandT-=dt;if(s.errandT<=0){if(s.errand==='coffee')s.cup=true;s.errand=null;route(s,s.goal.x,s.goal.y)}}
     if(false){s.breakAt=(s.breakAt??(5+Math.random()*10))-dt;
       if(s.breakAt<=0){s.breakAt=14+Math.random()*16;const r=Math.random();
