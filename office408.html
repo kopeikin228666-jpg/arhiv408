@@ -212,6 +212,7 @@ function seatFor(a,i){
   if(a.kind==='demoness')return {x:530,y:AISLE};
   if(a.status==='board'){const k=agents.filter(b=>b.status==='board').indexOf(a);const s=SEATS[k%SEATS.length];return {x:s[0],y:s[1]}}
   if(a.visit){const t=agents.find(b=>b._id===a.visit);if(t&&t!==a){if(t.room==='cabinet')return {x:C_DESK[0]+40,y:C_DESK[1]+50,visiting:t._id};const d=deskOf(t,agents.indexOf(t));return {x:d[0]+34,y:d[1]+28,visiting:t._id}}}
+  if(a.room==='cabinet'&&a.order!==0)return {x:C_DESK[0]+64,y:C_DESK[1]+36};
   if(a.room==='cabinet')return {x:C_DESK[0]+24,y:C_DESK[1]+14};
   const d=deskOf(a,i);
   return {x:d[0]+15,y:d[1]+28};
