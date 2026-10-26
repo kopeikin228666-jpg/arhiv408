@@ -1,0 +1,902 @@
+[
+{
+"line": 0,
+"chunk": 0,
+"w": "ДВЕСТИ",
+"key": false,
+"t0": 1.205,
+"t1": 2.01,
+"voice": "intro"
+},
+{
+"line": 0,
+"chunk": 0,
+"w": "СОРОК",
+"key": false,
+"t0": 1.66,
+"t1": 3.303,
+"voice": "intro"
+},
+{
+"line": 0,
+"chunk": 0,
+"w": "СТРАНИЦ…",
+"key": true,
+"t0": 2.325,
+"t1": 3.303,
+"voice": "intro"
+},
+{
+"line": 0,
+"chunk": 1,
+"w": "И",
+"key": false,
+"t0": 3.66,
+"t1": 4.04,
+"voice": "intro"
+},
+{
+"line": 0,
+"chunk": 1,
+"w": "НИ",
+"key": false,
+"t0": 3.94,
+"t1": 4.75,
+"voice": "intro"
+},
+{
+"line": 0,
+"chunk": 1,
+"w": "ОДНОГО…",
+"key": false,
+"t0": 4.17,
+"t1": 4.75,
+"voice": "intro"
+},
+{
+"line": 0,
+"chunk": 2,
+"w": "ПРОЧИТАННОГО",
+"key": true,
+"t0": 4.978,
+"t1": 6.12,
+"voice": "intro"
+},
+{
+"line": 0,
+"chunk": 2,
+"w": "СЛОВА.",
+"key": false,
+"t0": 5.77,
+"t1": 6.633,
+"voice": "intro"
+},
+{
+"line": 1,
+"chunk": 0,
+"w": "ЭТА",
+"key": false,
+"t0": 13.64,
+"t1": 14.02,
+"voice": "narr"
+},
+{
+"line": 1,
+"chunk": 0,
+"w": "КНИГА…",
+"key": true,
+"t0": 13.98,
+"t1": 14.745,
+"voice": "narr"
+},
+{
+"line": 1,
+"chunk": 1,
+"w": "НЕ",
+"key": false,
+"t0": 15.005,
+"t1": 15.34,
+"voice": "narr"
+},
+{
+"line": 1,
+"chunk": 1,
+"w": "ХОЧЕТ,",
+"key": false,
+"t0": 15.34,
+"t1": 15.94,
+"voice": "narr"
+},
+{
+"line": 1,
+"chunk": 1,
+"w": "ЧТОБЫ",
+"key": false,
+"t0": 15.82,
+"t1": 16.36,
+"voice": "narr"
+},
+{
+"line": 1,
+"chunk": 1,
+"w": "ЕЁ",
+"key": false,
+"t0": 16.18,
+"t1": 17.39,
+"voice": "narr"
+},
+{
+"line": 1,
+"chunk": 1,
+"w": "ЧИТАЛИ.",
+"key": true,
+"t0": 16.683,
+"t1": 17.39,
+"voice": "narr"
+},
+{
+"line": 2,
+"chunk": 0,
+"w": "В",
+"key": false,
+"t0": 19.205,
+"t1": 19.26,
+"voice": "narr"
+},
+{
+"line": 2,
+"chunk": 0,
+"w": "1912-М",
+"key": false,
+"t0": 19.265,
+"t1": 21.267,
+"voice": "narr"
+},
+{
+"line": 2,
+"chunk": 0,
+"w": "ЕЁ",
+"key": false,
+"t0": 21.388,
+"t1": 21.968,
+"voice": "narr"
+},
+{
+"line": 2,
+"chunk": 0,
+"w": "КУПИЛИ.",
+"key": true,
+"t0": 21.8,
+"t1": 22.523,
+"voice": "narr"
+},
+{
+"line": 3,
+"chunk": 0,
+"w": "ПОТОМ",
+"key": false,
+"t0": 22.748,
+"t1": 23.488,
+"voice": "narr"
+},
+{
+"line": 3,
+"chunk": 0,
+"w": "ПЫТАЛИСЬ",
+"key": false,
+"t0": 23.728,
+"t1": 24.823,
+"voice": "narr"
+},
+{
+"line": 3,
+"chunk": 0,
+"w": "ЧИТАТЬ.",
+"key": true,
+"t0": 24.32,
+"t1": 24.992,
+"voice": "narr"
+},
+{
+"line": 4,
+"chunk": 0,
+"w": "НИКТО…",
+"key": true,
+"t0": 27.702,
+"t1": 28.453,
+"voice": "nikto"
+},
+{
+"line": 4,
+"chunk": 1,
+"w": "НЕ",
+"key": false,
+"t0": 28.6,
+"t1": 29.25,
+"voice": "nikto"
+},
+{
+"line": 4,
+"chunk": 1,
+"w": "СМОГ.",
+"key": true,
+"t0": 28.79,
+"t1": 29.41,
+"voice": "nikto"
+},
+{
+"line": 5,
+"chunk": 0,
+"w": "ОНА",
+"key": false,
+"t0": 33.112,
+"t1": 33.48,
+"voice": "narr"
+},
+{
+"line": 5,
+"chunk": 0,
+"w": "НАПИСАНА…",
+"key": true,
+"t0": 33.31,
+"t1": 34.417,
+"voice": "narr"
+},
+{
+"line": 5,
+"chunk": 1,
+"w": "НЕИЗВЕСТНО",
+"key": true,
+"t0": 34.935,
+"t1": 35.82,
+"voice": "narr"
+},
+{
+"line": 5,
+"chunk": 1,
+"w": "КЕМ.",
+"key": true,
+"t0": 35.81,
+"t1": 36.425,
+"voice": "narr"
+},
+{
+"line": 5,
+"chunk": 2,
+"w": "ШЕСТЬСОТ",
+"key": false,
+"t0": 36.688,
+"t1": 37.707,
+"voice": "narr"
+},
+{
+"line": 5,
+"chunk": 2,
+"w": "ЛЕТ",
+"key": false,
+"t0": 37.4,
+"t1": 37.8,
+"voice": "narr"
+},
+{
+"line": 5,
+"chunk": 2,
+"w": "НАЗАД.",
+"key": true,
+"t0": 37.76,
+"t1": 38.46,
+"voice": "narr"
+},
+{
+"line": 6,
+"chunk": 0,
+"w": "ЯЗЫК…",
+"key": false,
+"t0": 40.408,
+"t1": 41.05,
+"voice": "narr"
+},
+{
+"line": 6,
+"chunk": 1,
+"w": "НИЧЕЙ.",
+"key": true,
+"t0": 41.37,
+"t1": 42.115,
+"voice": "narr"
+},
+{
+"line": 7,
+"chunk": 0,
+"w": "БУКВЫ",
+"key": false,
+"t0": 42.802,
+"t1": 43.45,
+"voice": "narr"
+},
+{
+"line": 7,
+"chunk": 0,
+"w": "ДВИГАЮТСЯ,",
+"key": true,
+"t0": 43.45,
+"t1": 44.537,
+"voice": "narr"
+},
+{
+"line": 7,
+"chunk": 0,
+"w": "КОГДА",
+"key": false,
+"t0": 44.707,
+"t1": 45.09,
+"voice": "narr"
+},
+{
+"line": 7,
+"chunk": 0,
+"w": "НИКТО",
+"key": false,
+"t0": 44.9,
+"t1": 45.97,
+"voice": "narr"
+},
+{
+"line": 7,
+"chunk": 1,
+"w": "НЕ",
+"key": false,
+"t0": 45.22,
+"t1": 45.97,
+"voice": "narr"
+},
+{
+"line": 7,
+"chunk": 1,
+"w": "СМОТРИТ.",
+"key": true,
+"t0": 45.438,
+"t1": 46.07,
+"voice": "narr"
+},
+{
+"line": 8,
+"chunk": 0,
+"w": "РАСТЕНИЯ…",
+"key": false,
+"t0": 47.592,
+"t1": 48.595,
+"voice": "narr"
+},
+{
+"line": 8,
+"chunk": 1,
+"w": "НЕПРАВИЛЬНЫЕ.",
+"key": true,
+"t0": 48.72,
+"t1": 49.8,
+"voice": "narr"
+},
+{
+"line": 9,
+"chunk": 0,
+"w": "ЖЕНЩИНЫ",
+"key": false,
+"t0": 51.795,
+"t1": 52.737,
+"voice": "narr"
+},
+{
+"line": 9,
+"chunk": 0,
+"w": "В",
+"key": false,
+"t0": 52.862,
+"t1": 53.08,
+"voice": "narr"
+},
+{
+"line": 9,
+"chunk": 0,
+"w": "ЗЕЛЁНОЙ",
+"key": true,
+"t0": 52.96,
+"t1": 54.005,
+"voice": "narr"
+},
+{
+"line": 9,
+"chunk": 0,
+"w": "ВОДЕ.",
+"key": false,
+"t0": 53.52,
+"t1": 54.005,
+"voice": "narr"
+},
+{
+"line": 10,
+"chunk": 0,
+"w": "ИХ",
+"key": false,
+"t0": 56.41,
+"t1": 57.26,
+"voice": "narr"
+},
+{
+"line": 10,
+"chunk": 0,
+"w": "ТЕЛА",
+"key": false,
+"t0": 56.68,
+"t1": 57.32,
+"voice": "narr"
+},
+{
+"line": 10,
+"chunk": 0,
+"w": "ЧУТЬ-ЧУТЬ…",
+"key": false,
+"t0": 57.345,
+"t1": 58.04,
+"voice": "narr"
+},
+{
+"line": 10,
+"chunk": 1,
+"w": "НЕ",
+"key": true,
+"t0": 58.135,
+"t1": 58.408,
+"voice": "narr"
+},
+{
+"line": 10,
+"chunk": 1,
+"w": "ТЕ.",
+"key": true,
+"t0": 58.46,
+"t1": 58.913,
+"voice": "narr"
+},
+{
+"line": 11,
+"chunk": 0,
+"w": "КАК",
+"key": false,
+"t0": 59.283,
+"t1": 59.605,
+"voice": "narr"
+},
+{
+"line": 11,
+"chunk": 0,
+"w": "БУДТО",
+"key": false,
+"t0": 59.343,
+"t1": 59.88,
+"voice": "narr"
+},
+{
+"line": 11,
+"chunk": 0,
+"w": "ХУДОЖНИК",
+"key": true,
+"t0": 59.68,
+"t1": 60.833,
+"voice": "narr"
+},
+{
+"line": 11,
+"chunk": 0,
+"w": "ВИДЕЛ",
+"key": false,
+"t0": 60.43,
+"t1": 60.833,
+"voice": "narr"
+},
+{
+"line": 11,
+"chunk": 0,
+"w": "ТО,",
+"key": false,
+"t0": 60.9,
+"t1": 61.16,
+"voice": "narr"
+},
+{
+"line": 11,
+"chunk": 1,
+"w": "ЧЕГО",
+"key": false,
+"t0": 61.12,
+"t1": 61.52,
+"voice": "narr"
+},
+{
+"line": 11,
+"chunk": 1,
+"w": "НЕЛЬЗЯ",
+"key": true,
+"t0": 61.34,
+"t1": 62.388,
+"voice": "narr"
+},
+{
+"line": 11,
+"chunk": 1,
+"w": "ВИДЕТЬ.",
+"key": false,
+"t0": 61.71,
+"t1": 62.388,
+"voice": "narr"
+},
+{
+"line": 12,
+"chunk": 0,
+"w": "НЕКОТОРЫЕ",
+"key": false,
+"t0": 69.4,
+"t1": 70.718,
+"voice": "narr"
+},
+{
+"line": 12,
+"chunk": 0,
+"w": "СТРАНИЦЫ",
+"key": false,
+"t0": 69.92,
+"t1": 70.718,
+"voice": "narr"
+},
+{
+"line": 12,
+"chunk": 0,
+"w": "ПАХНУТ.",
+"key": true,
+"t0": 70.863,
+"t1": 71.46,
+"voice": "narr"
+},
+{
+"line": 12,
+"chunk": 1,
+"w": "ДАЖЕ",
+"key": false,
+"t0": 71.8,
+"t1": 72.34,
+"voice": "narr"
+},
+{
+"line": 12,
+"chunk": 1,
+"w": "ЧЕРЕЗ",
+"key": false,
+"t0": 72.243,
+"t1": 73.128,
+"voice": "narr"
+},
+{
+"line": 12,
+"chunk": 1,
+"w": "СТЕКЛО.",
+"key": true,
+"t0": 72.52,
+"t1": 73.128,
+"voice": "narr"
+},
+{
+"line": 13,
+"chunk": 0,
+"w": "ПОСЛЕ",
+"key": false,
+"t0": 77.995,
+"t1": 78.718,
+"voice": "narr"
+},
+{
+"line": 13,
+"chunk": 0,
+"w": "НИХ",
+"key": false,
+"t0": 78.24,
+"t1": 78.718,
+"voice": "narr"
+},
+{
+"line": 13,
+"chunk": 0,
+"w": "СНЯТСЯ",
+"key": false,
+"t0": 78.838,
+"t1": 79.53,
+"voice": "narr"
+},
+{
+"line": 13,
+"chunk": 0,
+"w": "ОДНИ",
+"key": false,
+"t0": 79.44,
+"t1": 80.05,
+"voice": "narr"
+},
+{
+"line": 13,
+"chunk": 0,
+"w": "И",
+"key": false,
+"t0": 79.96,
+"t1": 80.13,
+"voice": "narr"
+},
+{
+"line": 13,
+"chunk": 0,
+"w": "ТЕ",
+"key": false,
+"t0": 80.12,
+"t1": 80.903,
+"voice": "narr"
+},
+{
+"line": 13,
+"chunk": 0,
+"w": "ЖЕ",
+"key": false,
+"t0": 80.18,
+"t1": 80.903,
+"voice": "narr"
+},
+{
+"line": 13,
+"chunk": 1,
+"w": "СНЫ.",
+"key": true,
+"t0": 80.38,
+"t1": 80.903,
+"voice": "narr"
+},
+{
+"line": 14,
+"chunk": 0,
+"w": "В",
+"key": false,
+"t0": 85.592,
+"t1": 85.67,
+"voice": "narr"
+},
+{
+"line": 14,
+"chunk": 0,
+"w": "ЭТИХ",
+"key": false,
+"t0": 85.652,
+"t1": 86.502,
+"voice": "narr"
+},
+{
+"line": 14,
+"chunk": 0,
+"w": "СНАХ",
+"key": false,
+"t0": 85.97,
+"t1": 86.502,
+"voice": "narr"
+},
+{
+"line": 14,
+"chunk": 0,
+"w": "КНИГА",
+"key": false,
+"t0": 86.752,
+"t1": 87.35,
+"voice": "narr"
+},
+{
+"line": 14,
+"chunk": 0,
+"w": "ОТКРЫВАЕТСЯ",
+"key": true,
+"t0": 87.27,
+"t1": 88.547,
+"voice": "narr"
+},
+{
+"line": 14,
+"chunk": 1,
+"w": "САМА.",
+"key": true,
+"t0": 88.017,
+"t1": 88.547,
+"voice": "narr"
+},
+{
+"line": 15,
+"chunk": 0,
+"w": "И",
+"key": false,
+"t0": 89.1,
+"t1": 89.17,
+"voice": "narr"
+},
+{
+"line": 15,
+"chunk": 0,
+"w": "КТО-ТО",
+"key": false,
+"t0": 89.16,
+"t1": 90.2,
+"voice": "narr"
+},
+{
+"line": 15,
+"chunk": 0,
+"w": "ШЕПЧЕТ",
+"key": true,
+"t0": 89.48,
+"t1": 90.2,
+"voice": "narr"
+},
+{
+"line": 15,
+"chunk": 0,
+"w": "С",
+"key": false,
+"t0": 90.318,
+"t1": 90.53,
+"voice": "narr"
+},
+{
+"line": 15,
+"chunk": 0,
+"w": "ДРУГОЙ",
+"key": false,
+"t0": 90.378,
+"t1": 91.373,
+"voice": "narr"
+},
+{
+"line": 15,
+"chunk": 1,
+"w": "СТОРОНЫ.",
+"key": false,
+"t0": 90.765,
+"t1": 91.373,
+"voice": "narr"
+},
+{
+"line": 16,
+"chunk": 0,
+"w": "ТЫ",
+"key": false,
+"t0": 105.118,
+"t1": 105.67,
+"voice": "reader"
+},
+{
+"line": 16,
+"chunk": 0,
+"w": "СЛИШКОМ",
+"key": false,
+"t0": 105.695,
+"t1": 106.858,
+"voice": "reader"
+},
+{
+"line": 16,
+"chunk": 0,
+"w": "ДОЛГО",
+"key": false,
+"t0": 106.29,
+"t1": 107.68,
+"voice": "reader"
+},
+{
+"line": 16,
+"chunk": 0,
+"w": "СМОТРИШЬ…",
+"key": true,
+"t0": 106.968,
+"t1": 107.68,
+"voice": "reader"
+},
+{
+"line": 17,
+"chunk": 0,
+"w": "ОНА",
+"key": false,
+"t0": 110.66,
+"t1": 111.685,
+"voice": "whisper"
+},
+{
+"line": 17,
+"chunk": 0,
+"w": "УЖЕ…",
+"key": false,
+"t0": 111.11,
+"t1": 111.685,
+"voice": "whisper"
+},
+{
+"line": 18,
+"chunk": 0,
+"w": "ВНУТРИ…",
+"key": true,
+"t0": 112.432,
+"t1": 113.113,
+"voice": "whisper"
+},
+{
+"line": 19,
+"chunk": 0,
+"w": "МОЖЕТ",
+"key": false,
+"t0": 121.198,
+"t1": 122.008,
+"voice": "final"
+},
+{
+"line": 19,
+"chunk": 0,
+"w": "БЫТЬ…",
+"key": false,
+"t0": 121.65,
+"t1": 122.008,
+"voice": "final"
+},
+{
+"line": 19,
+"chunk": 1,
+"w": "ОНА",
+"key": false,
+"t0": 122.102,
+"t1": 122.43,
+"voice": "final"
+},
+{
+"line": 19,
+"chunk": 1,
+"w": "НИКОГДА",
+"key": false,
+"t0": 122.25,
+"t1": 123.15,
+"voice": "final"
+},
+{
+"line": 19,
+"chunk": 1,
+"w": "И",
+"key": false,
+"t0": 123.05,
+"t1": 123.27,
+"voice": "final"
+},
+{
+"line": 19,
+"chunk": 1,
+"w": "НЕ",
+"key": false,
+"t0": 123.11,
+"t1": 123.41,
+"voice": "final"
+},
+{
+"line": 19,
+"chunk": 1,
+"w": "БЫЛА",
+"key": false,
+"t0": 123.37,
+"t1": 123.73,
+"voice": "final"
+},
+{
+"line": 19,
+"chunk": 1,
+"w": "КНИГОЙ.",
+"key": true,
+"t0": 123.71,
+"t1": 124.203,
+"voice": "final"
+}
+]

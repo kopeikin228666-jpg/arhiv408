@@ -1,0 +1,168 @@
+  0.25 voice  -21.0 dB  speech/bg  10.2 dB
+  0.50 voice  -22.3 dB  speech/bg  11.8 dB
+  0.75 voice  -22.7 dB  speech/bg   4.7 dB <8dB
+  1.00 voice  -21.0 dB  speech/bg  16.4 dB
+  1.25 voice  -21.7 dB  speech/bg  27.2 dB
+  1.50 voice  -47.2 dB  speech/bg  15.1 dB
+  1.75 voice  -27.5 dB  speech/bg  27.1 dB
+  2.00 voice  -20.0 dB  speech/bg   6.1 dB <8dB
+  2.25 voice  -23.1 dB  speech/bg  14.9 dB
+  2.50 voice  -23.2 dB  speech/bg  11.5 dB
+  2.75 voice  -23.3 dB  speech/bg   3.8 dB <8dB
+  3.00 voice  -23.0 dB  speech/bg  14.3 dB
+  3.25 voice  -20.6 dB  speech/bg  21.9 dB
+  3.50 voice  -23.0 dB  speech/bg  20.7 dB
+  3.75 voice  -21.8 dB  speech/bg  24.9 dB
+  4.00 voice  -26.2 dB  speech/bg  17.3 dB
+  4.25 voice  -60.1 dB  speech/bg -33.7 dB <8dB
+  6.75 voice  -31.2 dB  speech/bg  -3.3 dB <8dB
+  7.00 voice  -23.6 dB  speech/bg  11.9 dB
+  7.25 voice  -26.0 dB  speech/bg  13.8 dB
+  7.50 voice  -27.4 dB  speech/bg  16.0 dB
+  7.75 voice  -20.5 dB  speech/bg  17.6 dB
+  8.00 voice  -28.0 dB  speech/bg   9.7 dB
+  8.25 voice  -22.2 dB  speech/bg  24.8 dB
+  8.50 voice  -25.5 dB  speech/bg  22.7 dB
+  8.75 voice  -28.7 dB  speech/bg  10.6 dB
+  9.00 voice  -42.5 dB  speech/bg -10.4 dB <8dB
+  9.25 voice  -30.2 dB  speech/bg  21.1 dB
+  9.50 voice  -24.0 dB  speech/bg   6.1 dB <8dB
+  9.75 voice  -22.5 dB  speech/bg  16.7 dB
+ 10.00 voice  -19.9 dB  speech/bg  27.6 dB
+ 10.25 voice  -26.0 dB  speech/bg  35.0 dB
+ 10.50 voice  -27.1 dB  speech/bg  25.2 dB
+ 10.75 voice  -22.5 dB  speech/bg  31.8 dB
+ 11.00 voice  -24.0 dB  speech/bg  12.3 dB
+ 11.25 voice  -22.2 dB  speech/bg  15.5 dB
+ 11.50 voice  -24.6 dB  speech/bg  15.4 dB
+ 11.75 voice  -20.0 dB  speech/bg  22.3 dB
+ 12.00 voice  -19.9 dB  speech/bg  24.5 dB
+ 12.25 voice  -32.0 dB  speech/bg   0.7 dB <8dB
+ 14.50 voice  -21.1 dB  speech/bg  17.2 dB
+ 14.75 voice  -24.8 dB  speech/bg  29.1 dB
+ 15.00 voice  -26.4 dB  speech/bg  25.8 dB
+ 15.25 voice  -25.0 dB  speech/bg  11.6 dB
+ 15.50 voice  -21.8 dB  speech/bg  15.4 dB
+ 15.75 voice  -29.6 dB  speech/bg   5.7 dB <8dB
+ 16.25 voice  -31.5 dB  speech/bg  -0.3 dB <8dB
+ 16.50 voice  -27.3 dB  speech/bg  12.0 dB
+ 16.75 voice  -23.3 dB  speech/bg  24.6 dB
+ 17.00 voice  -26.2 dB  speech/bg  21.8 dB
+ 17.25 voice  -20.8 dB  speech/bg  25.6 dB
+ 17.50 voice  -25.9 dB  speech/bg   7.9 dB <8dB
+ 17.75 voice  -36.1 dB  speech/bg  -7.1 dB <8dB
+ 18.00 voice  -23.2 dB  speech/bg   8.9 dB
+ 18.25 voice  -29.9 dB  speech/bg   5.6 dB <8dB
+ 18.50 voice  -23.7 dB  speech/bg  15.9 dB
+ 18.75 voice  -24.9 dB  speech/bg  11.8 dB
+ 19.00 voice  -29.9 dB  speech/bg  10.5 dB
+ 19.25 voice  -26.4 dB  speech/bg  11.9 dB
+ 19.50 voice  -26.7 dB  speech/bg   7.5 dB <8dB
+ 19.75 voice  -35.4 dB  speech/bg  -8.1 dB <8dB
+ 20.25 voice  -26.7 dB  speech/bg   3.8 dB <8dB
+ 20.50 voice  -27.0 dB  speech/bg  11.3 dB
+ 20.75 voice  -23.1 dB  speech/bg  16.6 dB
+ 21.00 voice  -22.8 dB  speech/bg  17.8 dB
+ 21.25 voice  -22.9 dB  speech/bg  16.4 dB
+ 21.50 voice  -21.3 dB  speech/bg  16.6 dB
+ 21.75 voice  -28.5 dB  speech/bg   6.3 dB <8dB
+ 22.00 voice  -23.2 dB  speech/bg  13.7 dB
+ 22.25 voice  -34.9 dB  speech/bg  -0.4 dB <8dB
+ 22.50 voice  -24.0 dB  speech/bg  11.9 dB
+ 22.75 voice  -20.7 dB  speech/bg  16.2 dB
+ 23.00 voice  -25.6 dB  speech/bg  11.8 dB
+ 23.25 voice  -24.8 dB  speech/bg  12.3 dB
+ 23.50 voice  -25.9 dB  speech/bg   9.7 dB
+ 23.75 voice  -60.0 dB  speech/bg -28.8 dB <8dB
+ 24.00 voice  -21.5 dB  speech/bg   6.6 dB <8dB
+ 24.25 voice  -19.0 dB  speech/bg  19.4 dB
+ 24.50 voice  -20.4 dB  speech/bg  20.9 dB
+ 24.75 voice  -34.8 dB  speech/bg   6.8 dB <8dB
+ 25.00 voice  -30.0 dB  speech/bg  12.2 dB
+ 25.25 voice  -21.3 dB  speech/bg  23.4 dB
+ 25.50 voice  -27.3 dB  speech/bg  17.5 dB
+ 25.75 voice  -22.8 dB  speech/bg  22.3 dB
+ 26.00 voice  -22.2 dB  speech/bg  16.5 dB
+ 26.25 voice  -32.7 dB  speech/bg   1.8 dB <8dB
+ 27.25 voice  -29.5 dB  speech/bg   8.4 dB
+ 27.50 voice  -26.2 dB  speech/bg  15.6 dB
+ 27.75 voice  -22.1 dB  speech/bg  20.5 dB
+ 28.00 voice  -27.1 dB  speech/bg  16.9 dB
+ 28.25 voice  -31.2 dB  speech/bg  12.0 dB
+ 28.50 voice  -27.4 dB  speech/bg  13.6 dB
+ 28.75 voice  -24.1 dB  speech/bg  15.3 dB
+ 29.00 voice  -29.6 dB  speech/bg   5.5 dB <8dB
+ 29.25 voice  -59.9 dB  speech/bg -30.6 dB <8dB
+ 29.75 voice  -29.5 dB  speech/bg   5.5 dB <8dB
+ 30.00 voice  -24.9 dB  speech/bg  11.3 dB
+ 30.25 voice  -27.3 dB  speech/bg  10.2 dB
+ 30.50 voice  -26.2 dB  speech/bg   8.4 dB
+ 30.75 voice  -24.1 dB  speech/bg  11.5 dB
+ 31.00 voice  -29.5 dB  speech/bg   4.8 dB <8dB
+ 31.25 voice  -22.7 dB  speech/bg  13.4 dB
+ 31.50 voice  -37.5 dB  speech/bg   0.7 dB <8dB
+ 31.75 voice  -22.9 dB  speech/bg  15.3 dB
+ 32.00 voice  -28.4 dB  speech/bg  11.2 dB
+ 32.25 voice  -25.0 dB  speech/bg  14.4 dB
+ 32.50 voice  -26.4 dB  speech/bg  12.0 dB
+ 32.75 voice  -27.4 dB  speech/bg  11.1 dB
+ 33.00 voice  -40.3 dB  speech/bg  -2.9 dB <8dB
+ 36.50 voice  -27.0 dB  speech/bg   1.2 dB <8dB
+ 36.75 voice  -23.9 dB  speech/bg   7.4 dB <8dB
+ 37.00 voice  -23.6 dB  speech/bg  12.4 dB
+ 37.25 voice  -24.8 dB  speech/bg  10.4 dB
+ 37.50 voice  -28.0 dB  speech/bg   9.7 dB
+ 37.75 voice  -31.3 dB  speech/bg   6.0 dB <8dB
+ 38.00 voice  -21.8 dB  speech/bg  17.0 dB
+ 38.25 voice  -26.0 dB  speech/bg  12.6 dB
+ 38.50 voice  -27.0 dB  speech/bg   9.9 dB
+ 38.75 voice  -34.6 dB  speech/bg  -0.7 dB <8dB
+ 40.75 voice  -28.2 dB  speech/bg   8.0 dB
+ 41.00 voice  -22.1 dB  speech/bg  15.1 dB
+ 41.25 voice  -23.5 dB  speech/bg   9.8 dB
+ 41.50 voice  -24.4 dB  speech/bg  13.0 dB
+ 41.75 voice  -37.8 dB  speech/bg   0.5 dB <8dB
+ 42.00 voice  -27.4 dB  speech/bg   9.0 dB
+ 42.25 voice  -23.6 dB  speech/bg  14.7 dB
+ 42.50 voice  -23.1 dB  speech/bg  14.6 dB
+ 42.75 voice  -24.9 dB  speech/bg  10.1 dB
+ 43.00 voice  -32.6 dB  speech/bg  -0.4 dB <8dB
+ 43.25 voice  -65.0 dB  speech/bg -40.0 dB <8dB
+ 45.25 voice  -52.4 dB  speech/bg -20.2 dB <8dB
+ 45.50 voice  -26.5 dB  speech/bg   8.6 dB
+ 45.75 voice  -25.1 dB  speech/bg   9.2 dB
+ 46.00 voice  -20.5 dB  speech/bg  16.4 dB
+ 46.25 voice  -28.1 dB  speech/bg   9.4 dB
+ 46.50 voice  -26.9 dB  speech/bg   9.5 dB
+ 46.75 voice  -27.2 dB  speech/bg  10.6 dB
+ 47.00 voice  -28.0 dB  speech/bg   7.3 dB <8dB
+ 47.25 voice  -25.6 dB  speech/bg  12.3 dB
+ 47.50 voice  -27.8 dB  speech/bg   6.9 dB <8dB
+ 47.75 voice  -24.7 dB  speech/bg  11.3 dB
+ 48.00 voice  -49.1 dB  speech/bg -13.4 dB <8dB
+ 48.25 voice  -25.9 dB  speech/bg  10.4 dB
+ 48.50 voice  -30.5 dB  speech/bg   7.1 dB <8dB
+ 48.75 voice  -24.5 dB  speech/bg  12.7 dB
+ 49.00 voice  -21.9 dB  speech/bg  15.7 dB
+ 49.25 voice  -29.3 dB  speech/bg   8.1 dB
+ 49.50 voice  -28.5 dB  speech/bg   9.8 dB
+ 49.75 voice  -26.4 dB  speech/bg  11.7 dB
+ 50.00 voice  -22.7 dB  speech/bg  17.1 dB
+ 50.25 voice  -24.0 dB  speech/bg  16.1 dB
+ 50.50 voice  -29.6 dB  speech/bg   9.3 dB
+ 50.75 voice  -24.5 dB  speech/bg  15.5 dB
+ 51.00 voice  -32.4 dB  speech/bg   7.2 dB <8dB
+ 51.25 voice  -35.0 dB  speech/bg   0.8 dB <8dB
+ 51.50 voice  -54.6 dB  speech/bg -24.8 dB <8dB
+ 55.25 voice  -20.3 dB  speech/bg  19.5 dB
+ 55.50 voice  -16.0 dB  speech/bg  18.7 dB
+ 55.75 voice  -19.1 dB  speech/bg  19.0 dB
+ 56.00 voice  -16.7 dB  speech/bg  16.9 dB
+ 56.25 voice  -33.4 dB  speech/bg  14.9 dB
+ 56.50 voice  -42.1 dB  speech/bg  -6.4 dB <8dB
+ 56.75 voice  -50.3 dB  speech/bg -16.3 dB <8dB
+ 57.00 voice  -24.5 dB  speech/bg  11.3 dB
+ 57.25 voice  -30.4 dB  speech/bg  10.5 dB
+ 57.50 voice  -30.2 dB  speech/bg  10.6 dB
+ 57.75 voice  -50.0 dB  speech/bg  -7.4 dB <8dB
+ 58.00 voice  -57.3 dB  speech/bg -16.4 dB <8dB
