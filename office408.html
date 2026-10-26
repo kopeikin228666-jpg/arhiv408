@@ -647,34 +647,57 @@ let fired=[],seenFired=new Set(),vans=[];
 function renderFired(){const b=document.getElementById('firedList');if(!b)return;
   if(!fired.length){b.replaceChildren(el('li','empty','Пока никого. Работайте нормально — и не будет.'));return}
   b.replaceChildren(...fired.map(f=>{const li=el('li');li.append(el('span',null,(f.firedTime||'')+' · '+(f.name||f._id)+': '),document.createTextNode(f.firedWhy||'выкинут по решению надзирателей'));return li}))}
-function kicker(x,y,c,kick,dir){ // маленький пинающий: кожанка/роба + нога
+function kicker(x,y,c,kick,dir){
   px(x,y,6,5,'#0a0a0a');px(x+1,y+2,1,1,'#ba302a');px(x+4,y+2,1,1,'#ba302a');
   px(x-1,y+5,8,9,c);px(x+1,y+14,2,5,'#0a0c0b');
   if(kick)px(x+(dir>0?5:-5),y+13,7,2,'#0a0c0b');else px(x+4,y+14,2,5,'#0a0c0b');
 }
+function victim(x,y,t,mode){ // mode: run, flail, fly
+  const k=(t*10|0)%2;
+  px(x-5,y-18,10,7,'#1b1f1d');px(x-3,y-15,2,1,'#ba302a');px(x+1,y-15,2,1,'#ba302a');        // капюшон+глаза
+  px(x-5,y-11,10,9,'#2a2f2c');
+  if(mode==='run'){px(x-4,y-2,3,4+k,'#0a0c0b');px(x+1,y-2,3,5-k,'#0a0c0b');px(x-8,y-10+k*2,3,2,'#2a2f2c');px(x+5,y-9-k*2,3,2,'#2a2f2c')}
+  else{px(x-4,y-2,3,4,'#0a0c0b');px(x+1,y-2,3,4,'#0a0c0b');px(x-9,y-14+k*5,4,2,'#2a2f2c');px(x+5,y-9-k*5,4,2,'#2a2f2c')}
+}
+function bus(T,moving){ // локальные координаты, масштаб 2
+  const sp=(T*12|0)%2;
+  px(0,4,64,22,'#26301f');px(0,4,64,2,'#33402a');px(64,8,14,18,'#26301f');px(66,10,10,7,'#3a4a52');px(67,11,3,2,'#6a8a9a');  // кузов+кабина+стекло
+  for(let i=0;i<3;i++){px(4+i*10,8,8,6,'#0e1418');px(5+i*10,9,2,1,'#3a4a52')}                                            // окна
+  px(0,16,78,3,'#ba302a');                                                                                                    // красная полоса
+  const open=T>=3&&T<10.2;px(38,7,16,19,open?'#030404':'#1e2719');if(!open){px(45,15,2,2,'#c99a3c')}                        // дверь
+  px(76,19,3,3,(T*4|0)%2?'#ffe9a0':'#c99a3c');                                                                                 // фара
+  const blink=(T*5|0)%2;px(26,0,10,4,'#141716');px(27,1,4,2,blink?'#ff2a2a':'#5a1010');px(31,1,4,2,blink?'#1a3a8a':'#2a6aff');// мигалка
+  for(const wx of [10,58]){px(wx,24,10,8,'#050605');px(wx+3,26,4,4,'#3a3f3c');px(wx+4+(moving?sp*2-1:0),27,2,2,'#86938d')}   // колёса
+  cx.fillStyle='#e7dcc5';cx.font='bold 9px monospace';cx.textBaseline='top';cx.fillText('НА СВО',4,17.5);
+}
 function drawVans(dt){
-  for(const v of vans){v.t+=dt;const STOP=W-320,y=H-52,T=v.t;
-    const X=T<3?W+20-(T/3)*(W+20-STOP):(T<8?STOP:STOP-(T-8)*(T-8)*60);
-    cx.save();cx.translate(X|0,y);cx.scale(2,2);
-    px(0,0,54,18,'#141716');px(0,6,54,2,'#ba302a');px(54,5,13,13,'#141716');px(57,7,8,6,'#3a4a52');px(66,13,2,3,'#c99a3c');
-    px(5,18,8,6,'#050605');px(7,20,4,2,'#3a3f3c');px(41,18,8,6,'#050605');px(43,20,4,2,'#3a3f3c');px(55,18,8,6,'#050605');px(57,20,4,2,'#3a3f3c');
-    if(T>=3&&T<7.6)px(30,1,16,16,'#050605');
-    cx.fillStyle='#e7dcc5';cx.font='bold 9px monospace';cx.textBaseline='top';cx.fillText('НА СВО',6,8);
-    if(T>8&&((T*8|0)%2))px(-6,12,5,3,'#5d6662');
+  for(const v of vans){v.t+=dt;const T=v.t,STOP=W-330,y=H-94;
+    const leave=T>10.6;const X=T<3?W+20-(T/3)*(W+20-STOP):(leave?STOP-(T-10.6)*(T-10.6)*70:STOP);
+    const moving=T<3||leave;
+    cx.save();cx.translate(X|0,y);cx.scale(2,2);bus(T,moving);
+    if(moving)for(let i=0;i<3;i++){const ph=(T*3+i/3)%1;cx.fillStyle='rgba(120,128,124,'+(0.5-ph*0.5)+')';cx.fillRect(80+ph*18,22-ph*8+i,4+ph*6,3+ph*4)}   // выхлоп
     cx.restore();
-    // 3.2–6.2: все пинают; 6.2–7.4: летит в бусик
-    const gx=STOP+190,gy=y+30;
-    if(T>=3.2&&T<6.2){const ph=(T*6|0)%3,jolt=(T*12|0)%2,kx=-(T-3.2)*7;
-      cx.save();cx.translate(gx,gy);cx.scale(2,2);
-      cx.save();cx.translate(kx+(jolt?1:-1),0);cx.rotate(jolt?0.18:-0.12);px(-5,-18,10,18,'#2a2f2c');px(-3,-15,2,1,'#ba302a');px(1,-15,2,1,'#ba302a');px(-8,-12,3,2,'#2a2f2c');px(5,-10,3,2,'#2a2f2c');cx.restore();
-      kicker(kx+9,-20,'#3a0f0c',ph===0,-1);kicker(kx+18,-21,'#5a0f2a',ph===1,-1);kicker(kx-16,-20,'#141618',ph===2,1);kicker(kx+3,-34,'#c99a3c',(ph+1)%3===0,-1);
-      if(ph!==1){px(kx-12,-46,26,9,'#e8c45a');cx.fillStyle='#ba302a';cx.font='bold 7px monospace';cx.textBaseline='top';cx.fillText(['ПИНОК!','НА!','ХУЯК!'][(T*3|0)%3],kx-11,-45)}
-      cx.restore()}
-    if(T>=6.2&&T<7.4){const k=(T-6.2)/1.2,sx=gx-36,ex=X+74,ax=sx+(ex-sx)*k,ay=gy-14-Math.sin(k*Math.PI)*46+k*10;
-      cx.save();cx.translate(ax,ay);cx.rotate(T*9);px(-5,-9,10,18,'#2a2f2c');px(-3,-6,2,1,'#ba302a');px(1,-6,2,1,'#ba302a');cx.restore()}
-    if(T>=3&&T<8.5){cx.fillStyle='#ba302a';cx.font='bold 10px monospace';cx.textBaseline='top';cx.fillText(v.name+' — нахуй из офиса',STOP-10,y-48)}
+    if(leave&&T<12){px(X+40,y-24,26,10,'#e8c45a');cx.fillStyle='#141716';cx.font='bold 8px monospace';cx.textBaseline='top';cx.fillText('БИП!',X+44,y-23)}
+    const door=X+92, gy=y+72;
+    cx.save();cx.translate(0,0);
+    let vx=door+60, mode='flail', yell='';
+    if(T>=3&&T<4.6){const k=(T-3)/1.6;vx=door+60-k*200;mode='run';yell='БЛЯ! НЕ НАДО!'}               // убегает
+    else if(T>=4.6&&T<6){const k=(T-4.6)/1.4;vx=door-140+k*200;mode='flail';yell='ПУСТИТЕ, СУКИ!'}     // поймали, тащат назад
+    else if(T>=6&&T<8.6){vx=door+60+((T*14|0)%2?2:-2);mode='flail';yell=['Я ВСЁ ИСПРАВЛЮ!','ЭТО НЕ Я!','ДАЙТЕ ШАНС!'][(T*1.2|0)%3]}
+    if(T>=3&&T<8.6){
+      cx.save();cx.translate(vx,gy);cx.scale(2,2);victim(0,0,T,mode);
+      const ph=(T*6|0)%3,chase=T<4.6;const off=chase?18:0;
+      kicker(9+off,-20,'#3a0f0c',!chase&&ph===0,-1);kicker(18+off,-21,'#5a0f2a',!chase&&ph===1,-1);kicker(-16+(chase?40:0),-20,'#141618',!chase&&ph===2,1);kicker(3+off,-34,'#c99a3c',!chase&&(ph+1)%3===0,-1);
+      if(!chase&&T>=6&&ph!==1){px(-12,-48,26,9,'#e8c45a');cx.fillStyle='#ba302a';cx.font='bold 7px monospace';cx.textBaseline='top';cx.fillText(['ПИНОК!','НА!','ХУЯК!'][(T*3|0)%3],-11,-47)}
+      cx.restore();
+      if(yell){cx.fillStyle='#fff';cx.font='bold 9px monospace';cx.textBaseline='top';const w=cx.measureText(yell).width;px(vx-w/2-3,gy-104,w+6,13,'#141716');cx.fillStyle='#ff6a5a';cx.fillText(yell,vx-w/2,gy-102)}
+    }
+    if(T>=8.6&&T<9.9){const k=(T-8.6)/1.3,ex=door,ax=vx+(ex-vx)*k,ay=gy-20-Math.sin(k*Math.PI)*60+k*6;
+      cx.save();cx.translate(ax,ay);cx.rotate(T*10);cx.scale(2,2);victim(0,9,T,'flail');cx.restore()}
+    cx.restore();
+    if(T>=3&&T<11){cx.fillStyle='#ba302a';cx.font='bold 11px monospace';cx.textBaseline='top';cx.fillText(v.name+' — нахуй из офиса',STOP-10,y-58)}
   }
-  vans=vans.filter(v=>v.t<12);
+  vans=vans.filter(v=>v.t<14);
 }
 
 let media=[];
