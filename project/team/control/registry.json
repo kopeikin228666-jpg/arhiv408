@@ -1,0 +1,26 @@
+[
+ {
+  "job": "Карусель 002 v3 (22 правки)",
+  "owner": "Арт-директор №2",
+  "agent_id": "a2d365e7ddff78afc",
+  "watch": [
+   "/home/claude/voynich/team/posts/delo002/v3"
+  ],
+  "started": 1792991071.2534597,
+  "deadline": "сдача ~09:05, выход вт 12:30",
+  "status": "running",
+  "restarts": 1
+ },
+ {
+  "job": "Сценарий Дела 003 (совет)",
+  "owner": "Совет директоров",
+  "agent_id": "a408f85a9598cfd9b",
+  "watch": [
+   "/home/claude/voynich/team/board/delo003_board_v3.md"
+  ],
+  "started": 1792991071.2534597,
+  "deadline": "сдача ~08:50",
+  "status": "running",
+  "restarts": 1
+ }
+]
