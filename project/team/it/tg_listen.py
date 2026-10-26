@@ -22,7 +22,8 @@ while time.time()<deadline:
         m=u.get('message') or {}
         if str(m.get('chat',{}).get('id'))!=ME: continue
         txt=m.get('text') or m.get('caption') or ('[фото]' if m.get('photo') else '[вложение]')
-        rec={'t':m.get('date'),'text':txt};got.append(rec)
+        rp=m.get('reply_to_message') or {}
+        rec={'t':m.get('date'),'text':txt,'reply_to':(rp.get('caption') or rp.get('text') or '')[:120]};got.append(rec)
         open('/root/.tg/inbox.jsonl','a').write(json.dumps(rec,ensure_ascii=False)+'\n')
     if got:
         try: send('✅ Принял, передал директору. Отвечу здесь.')
