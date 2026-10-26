@@ -143,8 +143,9 @@ footer{color:var(--dim);font-size:12px}
     <button type="button" data-view="cabinet" id="v-cabinet">КАБИНЕТ ДИРЕКТОРА</button>
     <button type="button" data-view="it" id="v-it">АЙТИШНИК</button>
     <button type="button" data-view="ctrl" id="v-ctrl">ОТДЕЛ КОНТРОЛЯ</button>
+    <button type="button" data-view="yt" id="v-yt">ОТДЕЛ YOUTUBE</button>
   </div>
-  <div class="stage" id="stage"><canvas id="game" width="1040" height="230" aria-label="Офис: агенты за работой"></canvas></div>
+  <div class="stage" id="stage"><canvas id="game" width="1216" height="230" aria-label="Офис: агенты за работой"></canvas></div>
 
   <div class="cols">
     <section class="file" id="file" aria-live="polite"><p class="empty">Нажмите на фигурку в офисе или на имя в списке, чтобы открыть дело агента.</p></section>
@@ -165,7 +166,7 @@ footer{color:var(--dim);font-size:12px}
     <div class="lib" id="lib"><p class="empty">Пока пусто.</p></div>
   </section>
 
-  <section class="chat">
+  <section class="chat" id="chatbox">
     <h2>ЧАТ С ДИРЕКТОРОМ И КОМАНДОЙ</h2>
     <div class="to" id="chatTo" role="group" aria-label="Кому писать"></div>
     <div class="msgs" id="chatMsgs" aria-live="polite"><p class="empty">Сообщений пока нет.</p></div>
@@ -209,13 +210,15 @@ footer{color:var(--dim);font-size:12px}
 </div>
 
 <script>
-const W=1040,CW=720,IW=880,H=230,AISLE=124,DOOR=[330,346],DOOR2=[560,576],DOOR3=[720,736],DOOR4=[880,896],DOORX=[338,568,728,888];
-const VIEWS={all:[0,W],studio:[0,340],insta:[324,584],cabinet:[552,736],it:[712,896],ctrl:[872,1040]};
+const W=1216,CW=720,IW=880,YW=1040,H=230,AISLE=124,DOOR=[330,346],DOOR2=[560,576],DOOR3=[720,736],DOOR4=[880,896],DOOR5=[1040,1056],DOORX=[338,568,728,888,1048];
+const BUS_STOP=710;   // где встаёт автобус «НА СВО» (как при старой ширине 1040)
+const VIEWS={all:[0,W],studio:[0,340],insta:[324,584],cabinet:[552,736],it:[712,896],ctrl:[872,1056],yt:[1032,1216]};
 const cv=document.getElementById('game'),cx=cv.getContext('2d');
 const STATUS={working:['РАБОТАЕТ','#c99a3c'],done:['СДАЛ ОТЧЁТ','#5fa77a'],idle:['ЖДЁТ','#86938d'],board:['НА СОВЕТЕ','#ba302a'],stopped:['ОСТАНОВЛЕН','#5d6662']};
 const TRIM=['#ba302a','#c99a3c','#5fa77a','#6f8fb8','#a46fb0','#c9c9c9','#d07a3a','#4fb0a8','#b85c7a','#8a9a3a','#c95b8c','#7ab0d0'];
 const REDUCED=matchMedia('(prefers-reduced-motion: reduce)').matches;
 const S_DESKS=[[226,58],[24,92],[84,92],[144,92],[24,142],[84,142],[144,142],[204,96]];
+const Y_DESKS=[[1062,58],[1112,58],[1062,150],[1110,150],[1158,150]];   // монтажные столы отдела YouTube: 2 у стены + 3 внизу
 const I_DESKS=[[362,92],[422,92],[482,92],[362,144],[422,144],[482,144]];
 const TABLE={x:222,y:168,w:92,h:20};
 const SEATS=[[230,164],[252,164],[274,164],[296,164],[230,196],[252,196],[274,196],[296,196]];
@@ -229,18 +232,20 @@ const YELL_BY={
  qc:['8,5 из 10, блядь! Ниже — не принимаю!','Это заставка, а не ролик. Переделать нахуй!','Где 408? Почему крошечный?!','Статичный кадр больше 3 секунд. Позор.'],
  ctrl_chief:['Ревизия! Где файл прогресса, блядь?','40 минут без движения — перезапуск, сука!','Второй раз завис — на СВО поедешь!','Директор, ты опять «в работе» пишешь? Проверено?!','Срок горит, а ты сидишь, ёб твою мать!','Покажи результат, а не статус!'],
  factcop:['Источник, блядь! Где источник?!','«Заплатил»? Тестовыми монетами, сука!','Не раздувай факты, а то поедешь за арт-директором.','Пересказ — не первоисточник, ёб твою мать!']};
-const DEP_PATROL=[[960,AISLE],[640,AISLE],[560,AISLE],[450,AISLE],[400,206],[300,AISLE],[160,AISLE],[60,206],[200,206],[338,AISLE]];
+const DEP_PATROL=[[1136,AISLE],[960,AISLE],[640,AISLE],[560,AISLE],[450,AISLE],[400,206],[300,AISLE],[160,AISLE],[60,206],[200,206],[338,AISLE]];
 const YELLS=['Хули сидим?! Работать, блядь!','Покажи, что сделал за час. Нихуя? Я так и думал.','Это что за хуйня? 8,5 из 10 или на СВО!','Надзиратель, ты сам-то, блядь, проверял?!','Демоница, разносы раздаёшь, а сама нихуя не проверила!','Статус обнови, ёб твою мать!','Источник где, блядь? Покажи источник!','Машина «НА СВО» уже заводится, сука…','Кофе, блядь? Какой нахуй кофе?!','ОТК, не спать, блядь! Кто следующий?','Айтишник, бот где, блядь?','Двигай жопой, дедлайн горит!','Ещё один косяк — и поедешь на СВО, понял?','Ты на карандаше, блядь. Второе предупреждение — машина.','Хорошо сделаешь — на доску почёта. Хуёво — сам знаешь куда.','Режиссёр, у тебя уже 1 из 2. Не проеби v3!'];
 const WANDER=[[60,AISLE],[180,AISLE],[400,AISLE],[500,AISLE],[120,206],[450,206]];
 let agents=[],sprites={},prev={},selected=null,t0=performance.now(),bubbleFor=null,bubbleT=0;
 let reprimands=[],actives={},active=null,seenRep=new Set(),firstRep=true,view='all',vx0=0,vx1=W,hearts=[];
-const dust=[...Array(40)].map(()=>[Math.random()*W,50+Math.random()*170,Math.random()*6]);
+const dust=[...Array(47)].map(()=>[Math.random()*W,50+Math.random()*170,Math.random()*6]);
 
 function el(tag,cls,text){const e=document.createElement(tag);if(cls)e.className=cls;if(text!=null)e.textContent=text;return e}
-const roomOf=x=>x<DOORX[0]?'studio':(x<DOORX[1]?'insta':(x<DOORX[2]?'cabinet':(x<DOORX[3]?'it':'ctrl')));
-const ROOMS=['studio','insta','cabinet','it','ctrl'];
+const roomOf=x=>x<DOORX[0]?'studio':(x<DOORX[1]?'insta':(x<DOORX[2]?'cabinet':(x<DOORX[3]?'it':(x<DOORX[4]?'ctrl':'yt'))));
+const ROOMS=['studio','insta','cabinet','it','ctrl','yt'];
+const ytIdx=a=>(a.seat??agents.filter(b=>b.room==='yt').indexOf(a))%Y_DESKS.length;
 const C_DESK=[624,74];
 function deskOf(a,i){
+  if(a.room==='yt')return Y_DESKS[ytIdx(a)];
   if(a.room==='ctrl')return [DOOR4[1]+60,150];
   if(a.room==='it')return [DOOR3[1]+95,150];
   if(a.room==='cabinet')return C_DESK;
@@ -254,6 +259,7 @@ function seatFor(a,i){
   if(a.kind==='deputy')return {x:C_DESK[0]+64,y:C_DESK[1]+36};
   if(a.status==='board'){const k=agents.filter(b=>b.status==='board').indexOf(a);const s=SEATS[k%SEATS.length];return {x:s[0],y:s[1]}}
   if(a.visit){const t=agents.find(b=>b._id===a.visit);if(t&&t!==a){if(t.room==='cabinet')return {x:C_DESK[0]+40,y:C_DESK[1]+50,visiting:t._id};const d=deskOf(t,agents.indexOf(t));return {x:d[0]+34,y:d[1]+28,visiting:t._id}}}
+  if(a.room==='yt'){const d=Y_DESKS[ytIdx(a)];return {x:d[0]+22,y:d[1]+30}}
   if(a.room==='ctrl'){const k=agents.filter(b=>b.room==='ctrl').indexOf(a);return {x:DOOR4[1]+40+k*40,y:178}}
   if(a.room==='it'){const k=agents.filter(b=>b.room==='it').indexOf(a);return {x:DOOR3[1]+80+k*34,y:178}}
   if(a.room==='cabinet'&&a.order!==0)return {x:C_DESK[0]+64,y:C_DESK[1]+36};
@@ -325,7 +331,7 @@ function insta(t,busy){
   cx.fillStyle=`rgba(255,240,210,${glow*.18})`;cx.beginPath();cx.ellipse(X+176,70,34,12,0,0,7);cx.fill();
   px(X+146,8,18,24,'#0a0c0b');px(X+149,14,4,1,'#ba302a');px(X+157,14,4,1,'#ba302a');px(X+148,22,14,3,'#ba302a');
   px(X+150,206,50,12,'#3a2030');px(X+150,202,50,5,'#4a2a3c');px(X+196,196,8,14,'#2a211b');px(X+195,186,4,10,'#2f5a3a');px(X+200,184,4,12,'#3b6e47');
-  if(busy&&!REDUCED&&Math.random()<0.02)hearts.push([X+20+Math.random()*(W-X-40),200,0]);
+  if(busy&&!REDUCED&&Math.random()<0.02)hearts.push([X+20+Math.random()*(YW-X-40),200,0]);
   hearts=hearts.filter(h=>h[2]<3);for(const h of hearts){h[2]+=1/60;const y=h[1]-h[2]*30;cx.fillStyle=`rgba(201,91,140,${1-h[2]/3})`;cx.fillRect(h[0],y,1,1);cx.fillRect(h[0]+2,y,1,1);cx.fillRect(h[0]-1,y+1,5,1);cx.fillRect(h[0],y+2,3,1);cx.fillRect(h[0]+1,y+3,1,1)}
 }
 function cabinet(t){
@@ -383,8 +389,8 @@ function itRoom(t){
 }
 function ctrlRoom(t){
   const X=DOOR4[1];
-  px(X,0,W-X,H,'#120a0a');px(X,0,W-X,48,'#1a0c0c');px(X,46,W-X,2,'#ba302a');
-  for(let y=50;y<H;y+=10)px(X,y,W-X,1,'#170d0d');
+  px(X,0,YW-X,H,'#120a0a');px(X,0,YW-X,48,'#1a0c0c');px(X,46,YW-X,2,'#ba302a');
+  for(let y=50;y<H;y+=10)px(X,y,YW-X,1,'#170d0d');
   txt('ОТДЕЛ КОНТРОЛЯ',X+6,37,6,'#ff4a3a');
   // большая стена-табло: дедлайны и живые/мёртвые агенты
   px(X+6,4,132,30,'#050303');
@@ -397,7 +403,54 @@ function ctrlRoom(t){
   for(let k=0;k<3;k++){const mx=X+28+k*40;px(mx,134,26,14,'#1a0f0f');px(mx+2,136,22,10,'#060303');px(mx+4,138,((t/80+k*7)|0)%18,1,'#ff4a3a');px(mx+4,141,((t/110+k*5)|0)%14,1,'#c99a3c')}
   cx.fillStyle='rgba(255,60,40,.07)';cx.beginPath();cx.moveTo(X+80,50);cx.lineTo(X+30,150);cx.lineTo(X+130,150);cx.fill();px(X+77,48,6,4,'#3a1010');
 }
+function ytRoom(t){
+  const X=DOOR5[1],R=W,RW=R-X,A='#c4302b';
+  px(X,0,RW,H,'#110909');px(X,0,RW,48,'#180c0c');px(X,46,RW,2,A);
+  for(let y=50;y<H;y+=10)px(X,y,RW,1,'#170d0d');for(let x=X;x<R;x+=20)px(x,48,1,H-48,'#150c0c');
+  // табличка: ОТДЕЛ YOUTUBE · SHORTS / ДЛИННЫЕ
+  txt('ОТДЕЛ YOUTUBE',X+4,37,6,'#ff5a4a');cx.font='6px "Press Start 2P", monospace';const tw=cx.measureText('ОТДЕЛ YOUTUBE').width;
+  cx.font='4px "Press Start 2P", monospace';const sub='· SHORTS / ДЛИННЫЕ',sw=cx.measureText(sub).width;
+  txt(sub,Math.min(X+tw+7,R-2-sw),39,4,'#c9a0a0');
+  const live=agents.some(a=>a.room==='yt'&&a.status==='working');
+  // большой экран-плеер на стене (абстрактный плеер: красная плашка с белым треугольником)
+  px(X+6,3,98,32,'#241010');px(X+8,5,94,28,'#050303');
+  for(let k=0;k<12;k++){const hx=X+8+k*8,hh=4+((k*7+(live?(t/900|0):0))%9);px(hx,27-hh,8,hh,k%2?'#1a0c10':'#140a0e')}
+  px(X+8,27,94,1,'#2a1418');
+  const bx=X+46,by=10;px(bx,by,18,12,A);px(bx,by+12,18,1,'#7a1a16');
+  for(let c=0;c<6;c++){const hgt=(9-c*1.5)|0;px(bx+7+c,by+6-((hgt/2)|0),1,Math.max(1,hgt),'#ffffff')}
+  const prog=live?((t/60000)%1):0.37;px(X+10,30,90,1,'#3a2a2a');px(X+10,30,(90*prog)|0,1,A);px(X+9+((90*prog)|0),29,3,3,A);
+  // вертикальный экран Shorts 9:16
+  px(X+110,3,18,32,'#241010');px(X+112,5,14,28,'#070405');
+  const sh=(t/1400|0)%3;px(X+113,6+sh*2,12,10,['#2a1418','#1a1420','#201a12'][sh]);px(X+116,20,6,1,'#86938d');px(X+115,23,8,1,'#5d4a4a');px(X+113,31,(12*((t/3000)%1))|0,1,A);
+  // лампа REC
+  const rec=live&&(t/500|0)%2;px(X+134,8,20,10,'#1a0a0a');px(X+136,10,4,4,rec?'#ff2a2a':'#4a1010');txt('REC',X+141,11,3,rec?'#ff6a5a':'#5a2a2a');
+  // полка с кассетами и жёсткими дисками
+  px(R-26,52,22,62,'#241414');for(let r=0;r<5;r++){px(R-24,54+r*12,18,1,'#3a2020');
+    for(let k=0;k<4;k++){if((r+k)%3===2){px(R-24+k*4+1,57+r*12,3,8,'#3a3f42');px(R-24+k*4+2,58+r*12,1,1,(t/(300+k*70+r*50)|0)%2?'#5fa77a':'#1b2a20')}
+      else{px(R-24+k*4+1,55+r*12,3,10,'#0d0b0b');px(R-24+k*4+1,57+r*12,3,2,['#e2dbc8','#c4302b','#c9b98f'][(k+r)%3])}}}
+  // угол съёмки внизу: камера на штативе, табурет, софтбокс
+  px(X+14,198,10,7,'#1b1d1f');px(X+24,200,4,3,'#2a2e30');px(X+16,200,2,2,(t/500|0)%2?'#ff2a2a':'#4a1010');
+  px(X+18,205,2,14,'#3a3f3d');px(X+14,219,2,6,'#3a3f3d');px(X+22,219,2,6,'#3a3f3d');px(X+18,219,2,6,'#3a3f3d');
+  px(X+58,212,12,3,'#3a2418');px(X+60,215,2,10,'#22150e');px(X+66,215,2,10,'#22150e');
+  px(X+96,192,16,14,'#d8d2c4');px(X+98,194,12,10,'#f1ece0');px(X+103,206,2,18,'#3a3f3d');px(X+99,224,10,2,'#3a3f3d');
+  cx.fillStyle='rgba(241,236,224,.05)';cx.beginPath();cx.ellipse(X+76,212,34,10,0,0,7);cx.fill();
+  cx.fillStyle='rgba(196,48,43,.06)';cx.beginPath();cx.ellipse(X+56,52,60,10,0,0,7);cx.fill();
+}
+function ytDesk(d,i,occ,t){
+  const [x,y]=d,w=44;
+  px(x,y+12,w,10,'#2a1616');px(x,y+22,w,3,'#170b0b');px(x+2,y+25,2,6,'#170b0b');px(x+w-4,y+25,2,6,'#170b0b');
+  const st=occ&&occ.status;
+  for(let m=0;m<2;m++){const mx=x+3+m*20;px(mx,y,18,13,'#1d1416');px(mx+2,y+2,14,9,'#060404');px(mx+7,y+13,4,1,'#3a3f3d');
+    if(st==='working'){if(m===0){px(mx+3,y+4,10,4,'#2a1418');px(mx+7,y+5,2,2,'#e2dbc8')}
+      else{for(let r=0;r<3;r++){let c0=mx+3;for(let k=0;k<3;k++){const ln=2+((i*5+r*3+k*7)%4);px(c0,y+3+r*3,ln,2,['#c4302b','#6f8fb8','#c99a3c'][(r+k)%3]);c0+=ln+1}}
+        px(mx+3+((((t/150)|0)+i*3)%12),y+2,1,9,'#ff5a4a')}}
+    else if(st==='done'){px(mx+6,y+5,2,2,'#5fa77a');px(mx+8,y+7,2,2,'#5fa77a');px(mx+10,y+3,2,4,'#5fa77a')}
+    else if(occ)px(mx+4,y+6,10,1,'#2a1a1a')}
+  px(x+14,y+14,14,2,'#3a3f3d');px(x+32,y+13,6,3,'#c4302b');px(x+33,y+12,4,1,'#e2dbc8');
+  px(x+16,y+32,12,3,'#1d1416');
+}
 function wall(){
+  px(DOOR5[0],0,DOOR5[1]-DOOR5[0],H,'#1c0e0e');px(DOOR5[0]+2,0,DOOR5[1]-DOOR5[0]-4,H,'#271212');px(DOOR5[0],AISLE-22,DOOR5[1]-DOOR5[0],34,'#0a0404');px(DOOR5[0],AISLE-24,DOOR5[1]-DOOR5[0],2,'#c4302b');
   px(DOOR4[0],0,DOOR4[1]-DOOR4[0],H,'#1c1010');px(DOOR4[0]+2,0,DOOR4[1]-DOOR4[0]-4,H,'#261414');px(DOOR4[0],AISLE-22,DOOR4[1]-DOOR4[0],34,'#0a0505');px(DOOR4[0],AISLE-24,DOOR4[1]-DOOR4[0],2,'#ba302a');
   px(DOOR3[0],0,DOOR3[1]-DOOR3[0],H,'#141a1c');px(DOOR3[0]+2,0,DOOR3[1]-DOOR3[0]-4,H,'#1d2528');px(DOOR3[0],AISLE-22,DOOR3[1]-DOOR3[0],34,'#0a0d0e');px(DOOR3[0],AISLE-24,DOOR3[1]-DOOR3[0],2,'#4fb0a8');
   px(DOOR2[0],0,DOOR2[1]-DOOR2[0],H,'#1a1814');px(DOOR2[0]+2,0,DOOR2[1]-DOOR2[0]-4,H,'#26221c');
@@ -558,11 +611,11 @@ function step(dt){
   for(const boss of agents.filter(a=>BOSS[a.kind])){const bs=sprites[boss._id];if(!bs)continue;
     let act=actives[boss._id];
     if(!act&&reprimands.length){const r=reprimands.find(r=>!seenRep.has(r._id)&&bossFor(r)===boss);if(r){seenRep.add(r._id);const tgt=agents.find(a=>a._id===r.target);const ts=tgt&&sprites[tgt._id];
-      if(ts){act=actives[boss._id]={target:tgt._id,text:r.text,phase:'walk',t:0};route(bs,ts.x+(ts.x>W/2?-14:14),ts.y)}}}
+      if(ts){act=actives[boss._id]={target:tgt._id,text:r.text,phase:'walk',t:0};route(bs,ts.x+(ts.x>YW/2?-14:14),ts.y)}}}
     if(!act){bs.yellIn=(bs.yellIn??(2+Math.random()*6))-dt;if(bs.yellIn<=0){bs.yellIn=(boss.kind==='deputy'?6:9)+Math.random()*7;
       const pool=agents.filter(a=>a._id!==boss._id&&a.order!==0&&(boss.kind==='overseer'&&(boss._id==='overseer')?(!a.room||a.room==='studio'):boss.kind==='demoness'?a.room==='insta':true));
       const tgt=pool[(Math.random()*pool.length)|0];const ts=tgt&&sprites[tgt._id];const L=YELL_BY[boss._id]||YELL_BY[boss.kind]||YELLS;
-      if(ts){act=actives[boss._id]={target:tgt._id,text:L[(Math.random()*L.length)|0],phase:'walk',t:0,slap:Math.random()<.5};route(bs,ts.x+(ts.x>W/2?-14:14),ts.y)}}}
+      if(ts){act=actives[boss._id]={target:tgt._id,text:L[(Math.random()*L.length)|0],phase:'walk',t:0,slap:Math.random()<.5};route(bs,ts.x+(ts.x>YW/2?-14:14),ts.y)}}}
     if(act){if(act.phase==='walk'&&!bs.way.length){act.phase='scold';act.t=0}
       if(act.phase==='scold'){act.t+=dt;if(act.t>(boss.kind==='deputy'?3.5:7))delete actives[boss._id]}}
     else if(!bs.way.length){const P=boss.kind==='demoness'?D_PATROL:(boss.kind==='deputy'||boss._id==='qc'||boss._id==='factcop'||boss._id==='ctrl_chief')?DEP_PATROL:PATROL;bs.pause=(bs.pause||0)-dt;if(bs.pause<=0){bs.patrolK=((bs.patrolK||0)+1)%P.length;const p=P[bs.patrolK];route(bs,p[0],p[1]);bs.pause=1.2+Math.random()*2.5}}
@@ -587,9 +640,10 @@ function loop(now){
   const dt=Math.min(.1,(now-last)/1000);last=now;const t=now-t0;
   step(dt);
   cx.setTransform(1,0,0,1,-vx0,0);cx.imageSmoothingEnabled=false;
-  studio(t);insta(t,agents.some(a=>a.room==='insta'&&a.status==='working'));cabinet(t);itRoom(t);ctrlRoom(t);wall();dustAll(t);
+  studio(t);insta(t,agents.some(a=>a.room==='insta'&&a.status==='working'));cabinet(t);itRoom(t);ctrlRoom(t);ytRoom(t);wall();dustAll(t);
   S_DESKS.forEach((d,i)=>desk(d,i,agents.find(a=>(!a.room||a.room==='studio')&&!BOSS[a.kind]&&(a.order??-1)===i),t,false,false));
   I_DESKS.forEach((d,i)=>desk(d,i,agents.find(a=>a.room==='insta'&&(a.seat??-1)===i),t,false,true));
+  Y_DESKS.forEach((d,i)=>ytDesk(d,i,agents.find(a=>a.room==='yt'&&ytIdx(a)===i),t));
   [...agents].filter(a=>sprites[a._id]).sort((a,b)=>sprites[a._id].y-sprites[b._id].y).forEach(a=>hooded(sprites[a._id],a,t));
   cabinetDesk(t);drawVans(dt);
   for(const [bid,v] of Object.entries(actives)){if(!v||v.phase!=='scold'||!v.slap)continue;const ts=sprites[v.target];if(!ts)continue;if(((v.t*6)|0)%3===0){px(ts.x-9,ts.y-30,18,9,'#e8c45a');cx.fillStyle='#ba302a';cx.font='bold 7px monospace';cx.textBaseline='top';cx.fillText('БАЦ!',ts.x-8,ts.y-29)}}
@@ -643,12 +697,12 @@ function renderPanels(){
       const sw=el('i');sw.style.background=(sprites[a._id]||{}).trim||'#86938d';const st=STATUS[a.status]||STATUS.idle;
       b.append(sw,el('span',null,(a.name||'Агент')+' · '+(a.role||'')),el('em',a.status||'idle',st[0]));b.onclick=()=>pick(a._id);return b};
     const cb=agents.filter(a=>a.room==='cabinet'),st=agents.filter(a=>!a.room||a.room==='studio'),ig=agents.filter(a=>a.room==='insta');
-    ro.replaceChildren(...(cb.length?[el('h3',null,'КАБИНЕТ ДИРЕКТОРА'),...cb.map(mk)]:[]),el('h3',null,'СТУДИЯ 408'),...st.map(mk),...(ig.length?[el('h3',null,'ОТДЕЛ INSTAGRAM'),...ig.map(mk)]:[]),...(agents.some(a=>a.room==='ctrl')?[el('h3',null,'ОТДЕЛ КОНТРОЛЯ'),...agents.filter(a=>a.room==='ctrl').map(mk)]:[]),...(agents.some(a=>a.room==='it')?[el('h3',null,'КАБИНЕТ АЙТИШНИКА'),...agents.filter(a=>a.room==='it').map(mk)]:[]))}
+    ro.replaceChildren(...(cb.length?[el('h3',null,'КАБИНЕТ ДИРЕКТОРА'),...cb.map(mk)]:[]),el('h3',null,'СТУДИЯ 408'),...st.map(mk),...(ig.length?[el('h3',null,'ОТДЕЛ INSTAGRAM'),...ig.map(mk)]:[]),...(agents.some(a=>a.room==='ctrl')?[el('h3',null,'ОТДЕЛ КОНТРОЛЯ'),...agents.filter(a=>a.room==='ctrl').map(mk)]:[]),...(agents.some(a=>a.room==='it')?[el('h3',null,'КАБИНЕТ АЙТИШНИКА'),...agents.filter(a=>a.room==='it').map(mk)]:[]),...(agents.some(a=>a.room==='yt')?[el('h3',null,'ОТДЕЛ YOUTUBE'),...agents.filter(a=>a.room==='yt').map(mk)]:[]))}
   const f=document.getElementById('file');const a=agents.find(x=>x._id===selected);
   if(!a){f.replaceChildren(el('p','empty','Нажмите на фигурку в офисе или на имя в списке, чтобы открыть дело агента.'));return}
   const st=STATUS[a.status]||STATUS.idle;const dl=el('dl');
   const v=a.visit&&agents.find(b=>b._id===a.visit);
-  [['Сейчас',a.doing],['Где',v?'у стола: '+v.name:({insta:'Отдел Instagram',cabinet:'Кабинет директора',it:'Кабинет айтишника',ctrl:'Отдел контроля'}[a.room]||'Студия 408')],['Задача',a.task],['Итог',a.note],['Обновлено',a.updated]].forEach(([k,x])=>{if(x){dl.append(el('dt',null,k),el('dd',null,x))}});
+  [['Сейчас',a.doing],['Где',v?'у стола: '+v.name:({insta:'Отдел Instagram',cabinet:'Кабинет директора',it:'Кабинет айтишника',ctrl:'Отдел контроля',yt:'Отдел YouTube'}[a.room]||'Студия 408')],['Задача',a.task],['Итог',a.note],['Обновлено',a.updated]].forEach(([k,x])=>{if(x){dl.append(el('dt',null,k),el('dd',null,x))}});
   const n=reprimands.filter(r=>r.target===a._id).length;if(n)dl.append(el('dt',null,'Разносов'),el('dd',null,String(n)));
   f.replaceChildren(el('div','nm',a.name||'Агент'),el('div','rl',a.role||''),el('span','pill '+(a.status||'idle'),st[0]),dl);
 }
@@ -710,7 +764,7 @@ function bus(T,moving){ // локальные координаты, масшта
   cx.fillStyle='#e7dcc5';cx.font='bold 9px monospace';cx.textBaseline='top';cx.fillText('НА СВО',4,17.5);
 }
 function drawVans(dt){
-  for(const v of vans){v.t+=dt;const T=v.t,STOP=W-330,y=H-94;
+  for(const v of vans){v.t+=dt;const T=v.t,STOP=BUS_STOP,y=H-94;
     const leave=T>10.6;const X=T<3?W+20-(T/3)*(W+20-STOP):(leave?STOP-(T-10.6)*(T-10.6)*70:STOP);
     const moving=T<3||leave;
     cx.save();cx.translate(X|0,y);cx.scale(2,2);bus(T,moving);
@@ -765,7 +819,7 @@ function renderBoard(){
 
 let chat=[],chatTo='lead',SAMPLE=null,sampleTried=false;
 function nameOf(id){if(id==='boss')return 'Ты';if(id==='all')return 'Всем';const a=agents.find(x=>x._id===id);return a?a.name:(id==='lead'?'Claude':id)}
-function renderChat(){
+function renderChat(){if(!document.getElementById('chatMsgs'))return;
   const to=document.getElementById('chatTo');
   const opts=[['lead','Claude · директор'],['all','Всем'],...agents.filter(a=>a._id!=='lead').map(a=>[a._id,a.name])];
   to.replaceChildren(...opts.map(([id,n])=>{const b=document.createElement('button');b.type='button';b.textContent=n;b.setAttribute('aria-pressed',String(chatTo===id));b.onclick=()=>{chatTo=id;renderChat()};return b}));
@@ -793,7 +847,7 @@ document.getElementById('chatForm').addEventListener('submit',async e=>{
 });
 document.getElementById('chatIn').addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();document.getElementById('chatForm').requestSubmit()}});
 
-function renderAppr(){
+function renderAppr(){if(!document.getElementById('appr'))return;
   const box=document.getElementById('appr');
   if(!approvals.length){box.replaceChildren(el('p','empty','Пока вопросов нет.'));return}
   const open=approvals.filter(a=>!a.answer).length;
@@ -814,14 +868,18 @@ function renderAppr(){
   const live=document.getElementById('live').lastChild;
   const db=window.claude?await window.claude.use('db'):null;
   if(!db){live.textContent='НЕТ СВЯЗИ';document.getElementById('phase').textContent='Не удалось подключиться к данным офиса. Откройте страницу на claude.ai под своим аккаунтом.';return}
-  live.textContent='В ЭФИРЕ';DB=db;
-  db.collection('chat').orderBy('at').onSnapshot(s=>{chat=s.docs.map(d=>Object.assign({_id:d.id},d.data())).slice(-200);renderChat()},()=>{});
+  let viewer=true;try{const u=await window.claude.use('user');viewer=!(u&&(u.isOwner()||u.canEdit()))}catch(e){viewer=true}
+  if(viewer){SAMPLE=null;sampleTried=true;['chatbox','apprbox'].forEach(i=>{const x=document.getElementById(i);if(x)x.remove()});
+    live.textContent='ПРЯМОЙ ЭФИР · ПРОСМОТР';}else live.textContent='В ЭФИРЕ';
+  DB=db;
+  if(viewer){window.__VIEWER=true}
+  if(!viewer)db.collection('chat').orderBy('at').onSnapshot(s=>{chat=s.docs.map(d=>Object.assign({_id:d.id},d.data())).slice(-200);renderChat()},()=>{});
   db.collection('tasks').orderBy('order').onSnapshot(s=>{tasks=s.docs.map(d=>Object.assign({_id:d.id},d.data()));renderBoard()},()=>{});
   db.doc('meta/goal').onSnapshot(s=>{goal=s.exists?s.data():null;renderBoard()},()=>{});
   db.collection('media').orderBy('order','desc').onSnapshot(s=>{media=s.docs.map(d=>Object.assign({_id:d.id},d.data()));renderLib()},()=>{});
   db.collection('summons').orderBy('at','desc').limit(20).onSnapshot(s=>{summons=s.docs.map(d=>Object.assign({_id:d.id},d.data()));renderCarpet()},()=>{});
   db.collection('audiences').orderBy('at','desc').limit(20).onSnapshot(s=>{auds=s.docs.map(d=>Object.assign({_id:d.id},d.data()));renderAud()},()=>{});
-  db.collection('approvals').orderBy('num').onSnapshot(s=>{approvals=s.docs.map(d=>Object.assign({_id:d.id},d.data()));renderAppr()},()=>{});
+  if(!viewer)db.collection('approvals').orderBy('num').onSnapshot(s=>{approvals=s.docs.map(d=>Object.assign({_id:d.id},d.data()));renderAppr()},()=>{});
   db.doc('meta/now').onSnapshot(s=>{
     const d=s.exists?s.data():null,p=document.getElementById('phase');p.replaceChildren();
     if(!d){p.textContent='Сейчас в офисе тихо.';return}
