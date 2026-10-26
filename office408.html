@@ -68,6 +68,42 @@ h2{font-family:var(--f-pix);font-size:10px;letter-spacing:.12em;color:var(--dim)
 .empty{color:var(--dim);font-size:13px}
 footer{color:var(--dim);font-size:12px}
 @media (prefers-reduced-motion:reduce){.live i{animation:none}}
+.appr{background:#0b0d0a;border:2px solid var(--amber);padding:12px;display:grid;gap:10px}
+.appr .q{border:1px solid var(--line);background:var(--panel);padding:10px 12px;display:grid;gap:8px}
+.appr .q.yes{border-color:var(--green)} .appr .q.no{border-color:#4a1612;opacity:.7}
+.appr .t{font-size:14px;font-weight:600} .appr .d{color:var(--dim);font-size:12.5px;line-height:1.45}
+.appr .row{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.appr button{font:inherit;font-family:var(--f-pix);font-size:9px;letter-spacing:.08em;padding:8px 12px;cursor:pointer;background:transparent;color:var(--bone);border:1px solid var(--line)}
+.appr button.y{border-color:var(--green);color:var(--green)} .appr button.n{border-color:var(--red);color:var(--red)}
+.appr button[aria-pressed="true"].y{background:var(--green);color:#000} .appr button[aria-pressed="true"].n{background:var(--red);color:#000}
+.appr input{flex:1;min-width:160px;font:inherit;font-size:13px;background:#070908;color:var(--bone);border:1px solid var(--line);padding:7px 9px}
+.appr .st{font-family:var(--f-pix);font-size:8px;letter-spacing:.08em}
+.chat{background:#070908;border:2px solid var(--line);padding:12px;display:grid;gap:10px}
+.chat .to{display:flex;flex-wrap:wrap;gap:6px}
+.chat .to button{font:inherit;font-size:12px;padding:6px 10px;background:var(--panel);color:var(--bone);border:1px solid var(--line);cursor:pointer}
+.chat .to button[aria-pressed="true"]{border-color:var(--amber);color:var(--amber)}
+.chat .msgs{display:grid;gap:8px;max-height:360px;overflow:auto;padding-right:4px}
+.chat .m{max-width:85%;padding:8px 10px;border:1px solid var(--line);background:var(--panel);font-size:13.5px;line-height:1.45;white-space:pre-wrap;overflow-wrap:anywhere}
+.chat .m.me{justify-self:end;border-color:#5a4a1a;background:#14110a}
+.chat .m b{display:block;font-family:var(--f-pix);font-size:8px;letter-spacing:.08em;color:var(--dim);margin-bottom:4px;font-weight:400}
+.chat .m.auto b::after{content:" · быстрый ответ";color:#5d6662}
+.chat form{display:flex;gap:8px}
+.chat textarea{flex:1;min-height:42px;resize:vertical;font:inherit;font-size:14px;background:var(--panel);color:var(--bone);border:1px solid var(--line);padding:8px 10px}
+.chat form button{font-family:var(--f-pix);font-size:9px;letter-spacing:.08em;padding:0 14px;background:var(--amber);color:#000;border:0;cursor:pointer}
+.chat .hint{color:var(--dim);font-size:12px}
+.board4{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+@media (max-width:860px){.board4{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:480px){.board4{grid-template-columns:1fr}}
+.board4 .col{background:#070908;border:2px solid var(--line);padding:10px;display:grid;gap:8px;align-content:start;min-width:0}
+.board4 .col h3{font-family:var(--f-pix);font-size:8px;letter-spacing:.1em;margin:0 0 2px;font-weight:400;display:flex;justify-content:space-between}
+.board4 .card{background:var(--panel);border:1px solid var(--line);border-left:3px solid var(--line);padding:8px 9px;display:grid;gap:4px;min-width:0}
+.board4 .card .tt{font-size:13px;font-weight:600;overflow-wrap:anywhere}
+.board4 .card .mt{font-size:11.5px;color:var(--dim);overflow-wrap:anywhere}
+.board4 .c-done .card{border-left-color:var(--green)} .board4 .c-doing .card{border-left-color:var(--amber)}
+.board4 .c-next .card{border-left-color:#6a8cff} .board4 .c-later .card{border-left-color:#5d6662}
+.goal{background:#0b0d0a;border:2px solid var(--line);padding:12px;display:grid;gap:6px}
+.goal .big{font-family:var(--f-pix);font-size:12px;line-height:1.7}
+.goal .bar{height:10px;background:#070908;border:1px solid var(--line)} .goal .bar i{display:block;height:100%;background:var(--red)}
 </style>
 
 <div class="wrap">
@@ -94,6 +130,25 @@ footer{color:var(--dim);font-size:12px}
       <div class="roster" id="roster"><p class="empty">Столы пока пустые.</p></div>
     </section>
   </div>
+
+  <section class="goal" id="goal"></section>
+  <section>
+    <h2>ДОСКА ЗАДАЧ · ЧТО СДЕЛАНО, ЧТО ДЕЛАЕМ, ЧТО ДАЛЬШЕ</h2>
+    <div class="board4" id="board4"><p class="empty">Загружаю задачи…</p></div>
+  </section>
+
+  <section class="chat">
+    <h2>ЧАТ С ДИРЕКТОРОМ И КОМАНДОЙ</h2>
+    <div class="to" id="chatTo" role="group" aria-label="Кому писать"></div>
+    <div class="msgs" id="chatMsgs" aria-live="polite"><p class="empty">Сообщений пока нет.</p></div>
+    <form id="chatForm"><textarea id="chatIn" placeholder="Напиши сообщение…" aria-label="Сообщение"></textarea><button type="submit">ОТПРАВИТЬ</button></form>
+    <p class="hint" id="chatHint"></p>
+  </section>
+
+  <section class="appr" id="apprbox">
+    <h2>НА СОГЛАСОВАНИЕ · РЕШАЕТ ВЛАДЕЛЕЦ</h2>
+    <div id="appr"><p class="empty">Пока вопросов нет.</p></div>
+  </section>
 
   <section class="shame">
     <h2>ДОСКА ПОЗОРА · НАДЗИРАТЕЛЬ И ДЕМОНИЦА</h2>
@@ -484,18 +539,82 @@ function renderShame(){
   ol.replaceChildren(...reprimands.slice(0,20).map(r=>{const a=agents.find(x=>x._id===r.target);const li=el('li');li.append(el('span',null,(r.time||'')+' · '+((a&&a.name)||r.target)+': '),document.createTextNode(r.text||''));return li}));
 }
 
+let approvals=[],DB=null;
+let tasks=[],goal=null;
+const COLS=[['done','ГОТОВО','done'],['doing','В РАБОТЕ','working'],['next','ДАЛЬШЕ','idle'],['later','ПОТОМ / ОТЛОЖЕНО','stopped']];
+function renderBoard(){
+  const b=document.getElementById('board4');
+  b.replaceChildren(...COLS.map(([k,t,c])=>{const items=tasks.filter(x=>x.status===k);const col=el('div','col c-'+k);const h=el('h3',c);h.append(el('span',null,t),el('span',null,String(items.length)));col.append(h);
+    if(!items.length)col.append(el('p','empty','—'));
+    items.forEach(x=>{const cd=el('div','card');cd.append(el('div','tt',x.title||''));const meta=[x.owner,x.due].filter(Boolean).join(' · ');if(meta)cd.append(el('div','mt',meta));if(x.note)cd.append(el('div','mt',x.note));col.append(cd)});return col}));
+  const g=document.getElementById('goal');
+  if(!goal){g.replaceChildren(el('p','empty','Цель не задана.'));return}
+  const pct=Math.max(0,Math.min(100,goal.target?goal.current/goal.target*100:0));const bar=el('div','bar'),i=el('i');i.style.width=pct.toFixed(1)+'%';bar.append(i);
+  g.replaceChildren(el('h2',null,'ЦЕЛЬ АГЕНТСТВА'),el('div','big',goal.title||''),bar,el('div','mt',(goal.detail||'')+(goal.updated?' · обновлено '+goal.updated:'')));
+}
+
+let chat=[],chatTo='lead',SAMPLE=null,sampleTried=false;
+function nameOf(id){if(id==='boss')return 'Ты';if(id==='all')return 'Всем';const a=agents.find(x=>x._id===id);return a?a.name:(id==='lead'?'Claude':id)}
+function renderChat(){
+  const to=document.getElementById('chatTo');
+  const opts=[['lead','Claude · директор'],['all','Всем'],...agents.filter(a=>a._id!=='lead').map(a=>[a._id,a.name])];
+  to.replaceChildren(...opts.map(([id,n])=>{const b=document.createElement('button');b.type='button';b.textContent=n;b.setAttribute('aria-pressed',String(chatTo===id));b.onclick=()=>{chatTo=id;renderChat()};return b}));
+  const box=document.getElementById('chatMsgs');
+  const thread=chat.filter(m=>chatTo==='all'?true:(m.to===chatTo||m.from===chatTo||(m.to==='all')));
+  if(!thread.length)box.replaceChildren(el('p','empty',chatTo==='lead'?'Пиши директору: задачи, вопросы, решения.':'Напиши агенту — он ответит сразу.'));
+  else{box.replaceChildren(...thread.map(m=>{const d=el('div','m'+(m.from==='boss'?' me':'')+(m.auto?' auto':''));d.append(el('b',null,(m.time||'')+' · '+nameOf(m.from)+(m.from==='boss'?' → '+nameOf(m.to):'')),document.createTextNode(m.text||''));return d}));box.scrollTop=box.scrollHeight}
+  document.getElementById('chatHint').textContent=chatTo==='lead'||chatTo==='all'
+    ?'Директор читает этот чат, когда работает в сессии. Чтобы ответил быстрее, напиши в чат Claude: «проверь чат».'
+    :(SAMPLE?'Агент отвечает сразу, в своей роли. Решения и публикации — только через директора и твоё согласие.':'Ответ агента придёт, когда директор прочитает чат.');
+}
+async function agentReply(id,q){
+  if(!sampleTried){sampleTried=true;try{SAMPLE=window.claude?await window.claude.use('sample'):null}catch(e){SAMPLE=null}}
+  if(!SAMPLE)return;const a=agents.find(x=>x._id===id);if(!a)return;
+  const hist=chat.filter(m=>m.to===id||m.from===id).slice(-8).map(m=>nameOf(m.from)+': '+m.text).join('\n');
+  const prompt='Ты — «'+a.name+'», сотрудник офиса «Архив 408» (агентство, ведёт Instagram @arhiv408: тёмные пиксельные хоррор-рилсы о РЕАЛЬНЫХ загадках, ведущий — персонаж 408). Твоя роль: '+(a.role||'')+'. Твоя текущая задача: '+(a.task||'—')+'. Сейчас делаешь: '+(a.doing||'—')+'. Итог/заметки: '+(a.note||'—')+'.\n'+(a.kind==='demoness'?'Характер: дерзкая, язвительная надзирательница-демоница, но работу знает.\n':a.kind==='overseer'?'Характер: строгий надзиратель, ворчит на косяки.\n':'')+'Тебе пишет владелец агентства (босс). Отвечай по-русски, коротко (1–4 предложения), живо, в своей роли, по делу. Не выдумывай факты и цифры, которых нет в задаче. Не обещай, что что-то уже опубликовано или сделано, если это не так. Решения и публикации делает директор Claude после согласования с боссом — если просят что-то сделать, скажи, что передашь директору.\n\nПереписка:\n'+hist+'\n\nОтветь на последнее сообщение босса.';
+  try{const r=await SAMPLE(prompt,{modelTier:'quick',cache:false});const t=(r&&r.text||'').trim();if(t)await DB.collection('chat').add({from:id,to:'boss',text:t,at:Date.now(),time:hhmm(),auto:true})}catch(e){}
+}
+function hhmm(){const d=new Date();return String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0')}
+document.getElementById('chatForm').addEventListener('submit',async e=>{
+  e.preventDefault();const inp=document.getElementById('chatIn');const t=inp.value.trim();if(!t||!DB)return;
+  inp.value='';const to=chatTo;
+  try{await DB.collection('chat').add({from:'boss',to,text:t,at:Date.now(),time:hhmm(),read:false})}catch(err){inp.value=t;document.getElementById('chatHint').textContent='Не отправилось, попробуй ещё раз.';return}
+  if(to!=='lead'&&to!=='all')agentReply(to,t);
+});
+document.getElementById('chatIn').addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();document.getElementById('chatForm').requestSubmit()}});
+
+function renderAppr(){
+  const box=document.getElementById('appr');
+  if(!approvals.length){box.replaceChildren(el('p','empty','Пока вопросов нет.'));return}
+  const open=approvals.filter(a=>!a.answer).length;
+  box.replaceChildren(el('p','empty',open?('Ждут решения: '+open+'. Ответ сразу уходит команде.'):'Все вопросы решены. Спасибо, босс.'),...approvals.map(a=>{
+    const q=el('div','q'+(a.answer==='yes'?' yes':a.answer==='no'?' no':''));
+    q.append(el('div','t',(a.num?a.num+'. ':'')+(a.title||'')));if(a.detail)q.append(el('div','d',a.detail));
+    const row=el('div','row');
+    const mk=(v,c,txt)=>{const b=document.createElement('button');b.type='button';b.className=c;b.textContent=txt;b.setAttribute('aria-pressed',String(a.answer===v));
+      b.onclick=async()=>{const val=a.answer===v?null:v;b.disabled=true;try{await DB.doc('approvals/'+a._id).update({answer:val,comment:inp.value||'',answeredAt:Date.now()})}catch(e){b.textContent='ОШИБКА'}b.disabled=false};return b};
+    const inp=document.createElement('input');inp.placeholder='Комментарий (по желанию)';inp.value=a.comment||'';inp.setAttribute('aria-label','Комментарий к пункту '+(a.num||''));
+    inp.onchange=async()=>{try{await DB.doc('approvals/'+a._id).update({comment:inp.value})}catch(e){}};
+    row.append(mk('yes','y','ДА'),mk('no','n','НЕТ'),inp,el('span','st '+(a.answer==='yes'?'done':a.answer==='no'?'board':'working'),a.answer==='yes'?'ОДОБРЕНО':a.answer==='no'?'ОТКАЗ':'ЖДЁТ'));
+    q.append(row);return q}))
+}
+
 (async()=>{
-  sync();renderPanels();renderShame();requestAnimationFrame(loop);
+  sync();renderPanels();renderShame();renderChat();requestAnimationFrame(loop);
   const live=document.getElementById('live').lastChild;
   const db=window.claude?await window.claude.use('db'):null;
   if(!db){live.textContent='НЕТ СВЯЗИ';document.getElementById('phase').textContent='Не удалось подключиться к данным офиса. Откройте страницу на claude.ai под своим аккаунтом.';return}
-  live.textContent='В ЭФИРЕ';
+  live.textContent='В ЭФИРЕ';DB=db;
+  db.collection('chat').orderBy('at').onSnapshot(s=>{chat=s.docs.map(d=>Object.assign({_id:d.id},d.data())).slice(-200);renderChat()},()=>{});
+  db.collection('tasks').orderBy('order').onSnapshot(s=>{tasks=s.docs.map(d=>Object.assign({_id:d.id},d.data()));renderBoard()},()=>{});
+  db.doc('meta/goal').onSnapshot(s=>{goal=s.exists?s.data():null;renderBoard()},()=>{});
+  db.collection('approvals').orderBy('num').onSnapshot(s=>{approvals=s.docs.map(d=>Object.assign({_id:d.id},d.data()));renderAppr()},()=>{});
   db.doc('meta/now').onSnapshot(s=>{
     const d=s.exists?s.data():null,p=document.getElementById('phase');p.replaceChildren();
     if(!d){p.textContent='Сейчас в офисе тихо.';return}
     p.append(el('strong',null,d.phase||''));if(d.detail)p.append(document.createTextNode(' · '+d.detail));
   },()=>{});
-  db.collection('agents').orderBy('order').onSnapshot(s=>{agents=s.docs.map(d=>Object.assign({_id:d.id},d.data()));sync();renderPanels();renderShame()},()=>{});
+  db.collection('agents').orderBy('order').onSnapshot(s=>{agents=s.docs.map(d=>Object.assign({_id:d.id},d.data()));sync();renderPanels();renderShame();renderChat()},()=>{});
   db.collection('reprimands').orderBy('at','desc').limit(30).onSnapshot(s=>{
     reprimands=s.docs.map(d=>Object.assign({_id:d.id},d.data()));
     if(firstRep){reprimands.slice(1).forEach(r=>seenRep.add(r._id));firstRep=false}
