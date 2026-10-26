@@ -647,21 +647,34 @@ let fired=[],seenFired=new Set(),vans=[];
 function renderFired(){const b=document.getElementById('firedList');if(!b)return;
   if(!fired.length){b.replaceChildren(el('li','empty','Пока никого. Работайте нормально — и не будет.'));return}
   b.replaceChildren(...fired.map(f=>{const li=el('li');li.append(el('span',null,(f.firedTime||'')+' · '+(f.name||f._id)+': '),document.createTextNode(f.firedWhy||'выкинут по решению надзирателей'));return li}))}
+function kicker(x,y,c,kick,dir){ // маленький пинающий: кожанка/роба + нога
+  px(x,y,6,5,'#0a0a0a');px(x+1,y+2,1,1,'#ba302a');px(x+4,y+2,1,1,'#ba302a');
+  px(x-1,y+5,8,9,c);px(x+1,y+14,2,5,'#0a0c0b');
+  if(kick)px(x+(dir>0?5:-5),y+13,7,2,'#0a0c0b');else px(x+4,y+14,2,5,'#0a0c0b');
+}
 function drawVans(dt){
-  for(const v of vans){v.t+=dt;const STOP=W-300,y=H-52;
-    const X=v.t<3?W+20-(v.t/3)*(W+20-STOP):(v.t<6?STOP:STOP-(v.t-6)*(v.t-6)*60);
+  for(const v of vans){v.t+=dt;const STOP=W-320,y=H-52,T=v.t;
+    const X=T<3?W+20-(T/3)*(W+20-STOP):(T<8?STOP:STOP-(T-8)*(T-8)*60);
     cx.save();cx.translate(X|0,y);cx.scale(2,2);
     px(0,0,54,18,'#141716');px(0,6,54,2,'#ba302a');px(54,5,13,13,'#141716');px(57,7,8,6,'#3a4a52');px(66,13,2,3,'#c99a3c');
     px(5,18,8,6,'#050605');px(7,20,4,2,'#3a3f3c');px(41,18,8,6,'#050605');px(43,20,4,2,'#3a3f3c');px(55,18,8,6,'#050605');px(57,20,4,2,'#3a3f3c');
-    if(v.t>=3&&v.t<5.6)px(30,1,16,16,'#050605');
+    if(T>=3&&T<7.6)px(30,1,16,16,'#050605');
     cx.fillStyle='#e7dcc5';cx.font='bold 9px monospace';cx.textBaseline='top';cx.fillText('НА СВО',6,8);
-    if(v.t>6&&((v.t*8|0)%2))px(-6,12,5,3,'#5d6662');
+    if(T>8&&((T*8|0)%2))px(-6,12,5,3,'#5d6662');
     cx.restore();
-    if(v.t>=3.3&&v.t<5.3){const k=Math.min(1,(v.t-3.3)/1.4),sx=STOP+190,ex=X+74,ax=sx+(ex-sx)*k,ay=y-6-Math.sin(k*Math.PI)*46+k*20,r=(v.t*9)%6;
-      cx.save();cx.translate(ax,ay);cx.rotate(r);px(-5,-9,10,18,'#2a2f2c');px(-3,-6,2,1,'#ba302a');px(1,-6,2,1,'#ba302a');px(-8,-4,3,2,'#2a2f2c');px(5,-2,3,2,'#2a2f2c');cx.restore()}
-    if(v.t>=3&&v.t<6.5){cx.fillStyle='#ba302a';cx.font='bold 10px monospace';cx.textBaseline='top';cx.fillText(v.name+' — нахуй из офиса',STOP-10,y-40)}
+    // 3.2–6.2: все пинают; 6.2–7.4: летит в бусик
+    const gx=STOP+190,gy=y+30;
+    if(T>=3.2&&T<6.2){const ph=(T*6|0)%3,jolt=(T*12|0)%2,kx=-(T-3.2)*7;
+      cx.save();cx.translate(gx,gy);cx.scale(2,2);
+      cx.save();cx.translate(kx+(jolt?1:-1),0);cx.rotate(jolt?0.18:-0.12);px(-5,-18,10,18,'#2a2f2c');px(-3,-15,2,1,'#ba302a');px(1,-15,2,1,'#ba302a');px(-8,-12,3,2,'#2a2f2c');px(5,-10,3,2,'#2a2f2c');cx.restore();
+      kicker(kx+9,-20,'#3a0f0c',ph===0,-1);kicker(kx+18,-21,'#5a0f2a',ph===1,-1);kicker(kx-16,-20,'#141618',ph===2,1);kicker(kx+3,-34,'#c99a3c',(ph+1)%3===0,-1);
+      if(ph!==1){px(kx-12,-46,26,9,'#e8c45a');cx.fillStyle='#ba302a';cx.font='bold 7px monospace';cx.textBaseline='top';cx.fillText(['ПИНОК!','НА!','ХУЯК!'][(T*3|0)%3],kx-11,-45)}
+      cx.restore()}
+    if(T>=6.2&&T<7.4){const k=(T-6.2)/1.2,sx=gx-36,ex=X+74,ax=sx+(ex-sx)*k,ay=gy-14-Math.sin(k*Math.PI)*46+k*10;
+      cx.save();cx.translate(ax,ay);cx.rotate(T*9);px(-5,-9,10,18,'#2a2f2c');px(-3,-6,2,1,'#ba302a');px(1,-6,2,1,'#ba302a');cx.restore()}
+    if(T>=3&&T<8.5){cx.fillStyle='#ba302a';cx.font='bold 10px monospace';cx.textBaseline='top';cx.fillText(v.name+' — нахуй из офиса',STOP-10,y-48)}
   }
-  vans=vans.filter(v=>v.t<10);
+  vans=vans.filter(v=>v.t<12);
 }
 
 let media=[];

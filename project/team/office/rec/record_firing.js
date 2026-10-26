@@ -21,7 +21,7 @@ const html=fs.readFileSync(path.join(__dirname,'..','office408.html'),'utf8');
   await p.goto('file://'+tmp,{waitUntil:'domcontentloaded'});
   await p.waitForTimeout(3500);
   await p.evaluate(()=>window.__fire());
-  await p.waitForTimeout(11000);
+  await p.waitForTimeout(13000);
   const box=await p.locator('#stage').boundingBox();
   fs.writeFileSync(path.join(outDir,'box.json'),JSON.stringify(box));
   await ctx.close();await b.close();
