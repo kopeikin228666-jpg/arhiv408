@@ -117,6 +117,9 @@ footer{color:var(--dim);font-size:12px}
 .carpet .c.fired{border-left-color:var(--red)} .carpet .c.keep{border-left-color:var(--green)}
 .carpet .c .h{font-weight:600} .carpet .c .m{color:var(--dim);font-size:12px}
 .carpet .c .v{font-family:var(--f-pix);font-size:8px;letter-spacing:.08em}
+.honor{background:#0c0b06;border:2px solid #6a5a1a;padding:12px;display:grid;gap:6px}
+.honor ol{margin:0;padding-left:20px;display:grid;gap:5px;font-size:13px}
+.honor b{color:#e8c45a}
 </style>
 
 <div class="wrap">
@@ -174,6 +177,11 @@ footer{color:var(--dim);font-size:12px}
     <div id="carpet"><p class="empty">Пока никого не вызывали.</p></div>
   </section>
 
+  <section class="honor">
+    <h2>ДОСКА ПОЧЁТА · ★ ТОЛЬКО ЗА ОТК 9+/10 С ПЕРВОГО РАЗА</h2>
+    <ol id="honor"></ol>
+  </section>
+
   <section class="shame">
     <h2>ДОСКА ПОЗОРА · НАДЗИРАТЕЛЬ И ДЕМОНИЦА</h2>
     <div class="tally" id="tally"></div>
@@ -205,7 +213,7 @@ const PATROL=[[14,AISLE],[160,AISLE],[300,AISLE],[200,206],[60,206],[110,AISLE]]
 const D_PATROL=[[530,AISLE],[400,AISLE],[400,206],[520,206],[470,AISLE]];
 const BOSS={overseer:1,demoness:1,deputy:1};
 const DEP_PATROL=[[640,AISLE],[560,AISLE],[450,AISLE],[400,206],[300,AISLE],[160,AISLE],[60,206],[200,206],[338,AISLE]];
-const YELLS=['Хули сидим?! Работать, блядь!','Покажи, что сделал за час. Нихуя? Я так и думал.','Это что за хуйня? 8,5 из 10 или на СВО!','Надзиратель, ты сам-то, блядь, проверял?!','Демоница, разносы раздаёшь, а сама нихуя не проверила!','Статус обнови, ёб твою мать!','Источник где, блядь? Покажи источник!','Машина «НА СВО» уже заводится, сука…','Кофе, блядь? Какой нахуй кофе?!','ОТК, не спать, блядь! Кто следующий?','Айтишник, бот где, блядь?','Двигай жопой, дедлайн горит!'];
+const YELLS=['Хули сидим?! Работать, блядь!','Покажи, что сделал за час. Нихуя? Я так и думал.','Это что за хуйня? 8,5 из 10 или на СВО!','Надзиратель, ты сам-то, блядь, проверял?!','Демоница, разносы раздаёшь, а сама нихуя не проверила!','Статус обнови, ёб твою мать!','Источник где, блядь? Покажи источник!','Машина «НА СВО» уже заводится, сука…','Кофе, блядь? Какой нахуй кофе?!','ОТК, не спать, блядь! Кто следующий?','Айтишник, бот где, блядь?','Двигай жопой, дедлайн горит!','Ещё один косяк — и поедешь на СВО, понял?','Ты на карандаше, блядь. Второе предупреждение — машина.','Хорошо сделаешь — на доску почёта. Хуёво — сам знаешь куда.','Режиссёр, у тебя уже 1 из 2. Не проеби v3!'];
 const WANDER=[[60,AISLE],[180,AISLE],[400,AISLE],[500,AISLE],[120,206],[450,206]];
 let agents=[],sprites={},prev={},selected=null,t0=performance.now(),bubbleFor=null,bubbleT=0;
 let reprimands=[],actives={},active=null,seenRep=new Set(),firstRep=true,view='all',vx0=0,vx1=W,hearts=[];
@@ -472,6 +480,10 @@ function deputy(s,a,t){
   s.sx=x+5;s.sy=y-3;
 }
 function hooded(s,a,t){
+  if(a.stars&&!BOSS[a.kind]&&a.order!==0){const r=_hooded(s,a,t);if(s.sx!=null){const k=((t/400)|0)%2;px(s.sx-1,s.sy-7-k,3,3,'#e8c45a');px(s.sx,s.sy-8-k,1,5,'#e8c45a');px(s.sx-2,s.sy-6-k,5,1,'#e8c45a')}return r}
+  return _hooded(s,a,t);
+}
+function _hooded(s,a,t){
   if(a.order===0&&!BOSS[a.kind])return director(s,a,t);
   if(a.kind==='overseer')return overseer(s,a,t);
   if(a.kind==='demoness')return demoness(s,a,t);
@@ -604,6 +616,10 @@ function renderShame(){
 }
 
 let approvals=[],DB=null;
+function renderHonor(){const ol=document.getElementById('honor');if(!ol)return;const hs=agents.filter(a=>a.stars>0).sort((a,b)=>b.stars-a.stars);
+  if(!hs.length){ol.replaceChildren(el('li','empty','Пока никого. Звезду дают за работу, принятую ОТК на 9+ с первого раза. За «нормально» звёзд не дают.'));return}
+  ol.replaceChildren(...hs.map(a=>{const li=el('li');li.append(el('b',null,'★'.repeat(Math.min(a.stars,5))+' '),document.createTextNode((a.name||'')+(a.medal?' — '+a.medal:'')));return li}))}
+
 let summons=[];
 function renderCarpet(){const b=document.getElementById('carpet');
   if(!summons.length){b.replaceChildren(el('p','empty','Пока никого не вызывали.'));return}
@@ -720,7 +736,7 @@ function renderAppr(){
     if(!d){p.textContent='Сейчас в офисе тихо.';return}
     p.append(el('strong',null,d.phase||''));if(d.detail)p.append(document.createTextNode(' · '+d.detail));
   },()=>{});
-  db.collection('agents').orderBy('order').onSnapshot(s=>{const all=s.docs.map(d=>Object.assign({_id:d.id},d.data()));agents=all.filter(a=>a.status!=='fired');fired=all.filter(a=>a.status==='fired');fired.forEach(f=>{if(seenFired.has(f._id))return;seenFired.add(f._id);if(Date.now()-(f.firedAt||0)<180000)vans.push({name:f.name||'агент',t:0})});renderFired();sync();renderPanels();renderShame();renderChat()},()=>{});
+  db.collection('agents').orderBy('order').onSnapshot(s=>{const all=s.docs.map(d=>Object.assign({_id:d.id},d.data()));agents=all.filter(a=>a.status!=='fired');fired=all.filter(a=>a.status==='fired');fired.forEach(f=>{if(seenFired.has(f._id))return;seenFired.add(f._id);if(Date.now()-(f.firedAt||0)<180000)vans.push({name:f.name||'агент',t:0})});renderFired();sync();renderPanels();renderShame();renderChat();renderHonor()},()=>{});
   db.collection('reprimands').orderBy('at','desc').limit(30).onSnapshot(s=>{
     reprimands=s.docs.map(d=>Object.assign({_id:d.id},d.data()));
     if(firstRep){reprimands.slice(1).forEach(r=>seenRep.add(r._id));firstRep=false}
