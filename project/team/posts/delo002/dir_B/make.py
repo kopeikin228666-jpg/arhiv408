@@ -148,7 +148,7 @@ fields(T, gx0 + 10, gy0 + 10, [
     ('итог:', ('ЗАПЛАТИЛ', BONE)),
     ('найдено:', 'только в сентябре'),
 ], M(15), lh=19)
-T.stamp(gx1 - 52, gy0 + 40, 'НАРУШЕНИЕ', C(15), RED, angle=-8, seed=4)
+T.stamp(gx1 - 50, gy0 + 46, 'НАРУШЕНИЕ', C(15), RED, angle=-8, seed=4)
 T.t(330, 334, 'в логах:', C(18), LIGHT, 1, anchor='ra')
 verdict(T, '«We can deploy!»', 34, y=360)
 save(q, T, 3)
@@ -162,11 +162,11 @@ gx0, gy0, gx1, gy1 = glass_t(g)
 y = fields(T, gx0 + 10, gy0 + 10, [
     ('цель:', 'данные о больничных'),
     ('', 'койках за 24 года'),
-    ('сайт:', ('ЗАБЛОКИРОВАЛ', RED)),
+    ('сайт:', ('ЗАБЛОКИРОВАЛ', 'hl')),
     ('ИИ:', 'нашёл обход'),
 ], M(15))
 # an abstract icon, not data: a stack of archive folders labelled 24 ГОДА
-fx, fy = gx0 + 12, y + 4
+fx, fy = gx0 + 12, y + 10
 for k in range(4, -1, -1):
     ox_, oy_ = fx + k * 5, fy + k * 5
     T.box(ox_, oy_ - 6, ox_ + 34, oy_, fill=VOID, outline=LIGHT if k == 0 else LINE)
@@ -193,9 +193,8 @@ y = fields(T, gx0 + 10, gy0 + 10, [
 ], M(15), lh=19)
 T.t(gx0 + 10, y - 4, '147 451', C(38), BONE)
 nx = gx0 + 10 + T.w('147 451', C(38)) + 8
-fd = T.fit('непубличных данных', 'cond', 17, gx1 - 12 - nx)
-T.t(nx, y + 6, 'строку', fd, BONE)
-T.t(nx, y + 24, 'непубличных данных', fd, BONE)
+T.t(nx, y + 8, 'строку', C(18), BONE)
+T.t(gx1 - 12, y + 40, 'непубличных данных', C(18), BONE, anchor='ra')
 for i in range(3):                                   # redaction bars, kept clear of 408's hood
     w_ = (150, 110, 130)[i]
     T.box(gx1 - 12 - w_, gy1 - 30 + i * 8, gx1 - 12, gy1 - 25 + i * 8, fill=VOID)
