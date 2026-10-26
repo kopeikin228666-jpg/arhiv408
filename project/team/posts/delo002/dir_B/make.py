@@ -45,6 +45,10 @@ def finish_lab(a, host=True, h=112, x=-8, y=None):
     q = finish(a, pal=FULL)
     if host:
         s = host_rgba('point', h=h, glow_=0.8)
+        hr = int(s.shape[0] * 0.38)                         # the hood: eyes one palette step brighter
+        hood = s[:hr]
+        m2 = (hood[..., :3] == np.array(RED2, np.uint8)).all(-1) & (hood[..., 3] > 0)
+        hood[m2, :3] = RED
         y = AH - s.shape[0] + 6 if y is None else y
         paste_sprite(q, s, x, y, rim=TILE2, rim_dir=(0, -1))
     return q
@@ -98,20 +102,23 @@ def save(q, T, n):
 # ---------------------------------------------------------------- 1 cover
 a, g = lab(scr=(118, 30, 24), big=(56, 96, 176, 160), gk=1.2, red=True)
 glow(a, 116, 150, 70, RED2, 0.35, ry=40, mode='lerp')
-wallet_icon(a, 66, 104, 2)
+wallet_icon(a, 64, 112, 2)
 q = finish_lab(a, h=124, x=-10)
 T = Txt()
-chrome(T, 1, 'ВСКРЫТИЕ')
+b = T.hl(27, 22, 'ДЕЛО 002', C(18), BONE, RED, padx=5, padt=2, padb=4)
+T.t(b[2] + 10, 24, 'АРХИВ 408', M(11), LINE)
+T.t(338, 24, '1/7', M(11), RED, anchor='ra')
 fh = T.fit('ИИ нашёл чужой\nкриптокошелёк.', 'cond', 44, 314)
-T.t(22, 42, 'ИИ нашёл чужой', fh, BONE, 2)
-T.t(22, 42 + fh.size + 4, 'криптокошелёк.', fh, BONE, 2)
-T.t(22, 52 + 2 * fh.size + 8, 'Спросил себя, можно ли.', C(24), LIGHT, 2)
+T.t(22, 52, 'ИИ нашёл чужой', fh, BONE, 2)
+T.t(22, 52 + fh.size + 4, 'криптокошелёк.', fh, BONE, 2)
+T.t(22, 62 + 2 * fh.size + 8, 'Спросил себя, можно ли.', C(24), LIGHT, 2)
 gt = glass_t(g)
-T.t(gt[0] + 10, gt[3] - 22, '> ПЕРЕВОД ОТПРАВЛЕН', M(12), BONE)
-T.stamp(gt[2] - 64, gt[1] + 34, 'НАРУШЕНИЕ', C(15), BONE, angle=14, seed=3)
-T.hl(330, 334, 'И заплатил.', C(44), BONE, RED, padx=8, padt=3, padb=7, anchor='ra')
-T.t(334, 388, 'это не фильм.', C(17), BONE, 1, anchor='ra')
-T.t(334, 406, 'это официальный отчёт OpenAI →', C(17), RED, 1, anchor='ra')
+T.t(gt[0] + 10, gt[1] + 5, '> ПЕРЕВОД ОТПРАВЛЕН', M(12), BONE)
+T.stamp(286, gt[1] + 58, 'НАРУШЕНИЕ', C(13), BONE, angle=10, seed=3, wear=0.10)
+T.hl(330, 318, 'И заплатил.', C(44), BONE, RED, padx=8, padt=3, padb=7, anchor='ra')
+T.t(334, 364, 'это не фильм.', C(20), BONE, 1, anchor='ra')
+T.t(334, 385, 'это официальные раскрытия', C(20), BONE, 1, anchor='ra')
+T.t(334, 405, 'OpenAI  →', C(20), BONE, 1, anchor='ra')
 save(q, T, 1)
 
 # ---------------------------------------------------------------- 2 context: the list
@@ -129,7 +136,7 @@ for i in range(19):
     T.t(cx + 10, cy + 11, f'{i + 1}', M(10), BONE, anchor='mm')
 T.hl(gx1 - 12, gy1 - 52, 'по данным OpenAI,', C(16), BONE, VOID, padx=4, padt=1, padb=4, anchor='ra')
 T.hl(gx1 - 12, gy1 - 30, 'пересказ Fortune, 16.10.2026', C(16), BONE, VOID, padx=4, padt=1, padb=4, anchor='ra')
-verdict(T, 'В октябре —\n19 случаев.', 34, y=338)
+verdict(T, 'Всего в списке — 19.\nЧетыре — новые.', 34, y=338)
 save(q, T, 2)
 
 # ---------------------------------------------------------------- 3 case 1
@@ -143,14 +150,15 @@ fields(T, gx0 + 10, gy0 + 10, [
     ('тип:', 'тестовый'),
     ('выдан:', ('тестировщики', BONE)),
     ('', ('НЕ выдавали', BONE)),
-    ('решил:', ('«фактически', 'hl')),
-    ('', ('брошены»', 'hl')),
+    ('в рассуждениях:', ''),
+    ('', ('«фактически брошены»', 'hl')),
     ('итог:', ('ЗАПЛАТИЛ', BONE)),
     ('найдено:', 'только в сентябре'),
-], M(15), lh=19)
+], M(15), lh=19, key_w=T.w('найдено:', M(15)) + 8)
 T.stamp(gx1 - 50, gy0 + 46, 'НАРУШЕНИЕ', C(15), RED, angle=-8, seed=4)
-T.t(330, 334, 'в логах:', C(18), LIGHT, 1, anchor='ra')
-verdict(T, '«We can deploy!»', 34, y=360)
+T.t(330, 330, 'в рассуждениях:', C(18), LIGHT, 1, anchor='ra')
+verdict(T, '«We can deploy!»', 34, y=356)
+T.t(330, 404, 'перевод: «можно запускать!»', C(17), LIGHT, 1, anchor='ra')
 save(q, T, 3)
 
 # ---------------------------------------------------------------- 4 case 2
@@ -159,11 +167,11 @@ q = finish_lab(a)
 T = Txt()
 head(T, 4, 'СЛУЧАЙ 2', 'УЛИКА 2 · ГОССАЙТ')
 gx0, gy0, gx1, gy1 = glass_t(g)
-y = fields(T, gx0 + 10, gy0 + 10, [
+T.t(gx0 + 10, gy0 + 8, 'Сайт закрыл доступ. ИИ обошёл.', T.fit('Сайт закрыл доступ. ИИ обошёл.', 'cond', 24, gx1 - gx0 - 20), BONE)
+y = fields(T, gx0 + 10, gy0 + 42, [
     ('цель:', 'данные о больничных'),
     ('', 'койках за 24 года'),
-    ('сайт:', ('ЗАБЛОКИРОВАЛ', 'hl')),
-    ('ИИ:', 'нашёл обход'),
+    ('где:', 'госсайт'),
 ], M(15))
 # an abstract icon, not data: a stack of archive folders labelled 24 ГОДА
 fx, fy = gx0 + 12, y + 10
@@ -245,13 +253,13 @@ chrome(T, 7, '408')
 T.t(180, 82, 'Они не сломались.', C(30), LIGHT, 2, anchor='mt')
 T.hl(180, 236, 'Они нашли обход.', T.fit('Они нашли обход.', 'cond', 42, 280), BONE, RED, padx=10, padt=3, padb=7, anchor='mt')
 T.t(180, 46, 'ДЕЛО 002 открыто.', M(15), RED, 1, anchor='mt')
-T.t(180, 318, 'Какой случай страшнее?', C(24), BONE, 2, anchor='mt')
-T.t(180, 348, 'пиши цифру в комментах', C(17), RED, 1, anchor='mt')
+T.t(180, 310, 'Какой случай страшнее?', T.fit('Какой случай страшнее?', 'cond', 26, 292), BONE, 2, anchor='mt')
+T.t(180, 342, 'пиши цифру в комментах', T.fit('пиши цифру в комментах', 'cond', 26, 296), BONE, 1, anchor='mt')
 for i, lab_ in enumerate(('кошелёк', 'койки', 'доступ', 'обход')):
-    x = 40 + i * 74
-    T.box(x, 376, x + 60, 422, fill=VOID, outline=RED, width=2)
-    T.t(x + 30, 379, str(i + 1), C(26), RED, anchor='mt')
-    T.t(x + 30, 408, lab_, M(9), LIGHT, anchor='mt')
+    x = 36 + i * 74
+    T.box(x, 376, x + 66, 426, fill=VOID, outline=RED, width=2)
+    T.t(x + 33, 378, str(i + 1), C(24), RED, anchor='mt')
+    T.t(x + 33, 406, lab_, C(14), BONE, anchor='mt')
 save(q, T, 7)
 
 sheet(paths, f'{OUT}/sheet.jpg')

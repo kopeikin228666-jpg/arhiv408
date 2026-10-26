@@ -121,12 +121,12 @@ elif PART == 3:
         flashes=[(0.80, 0.33, 9.2), (2.08, 0.30, 52.6), (2.76, 0.28, 12.9)],
         montage=[(4.25, 0.26, 73.2), (4.51, 0.26, 111.6), (4.77, 0.26, 65.6)],
         clip=None, title=5.05, title_text=('ДЕЛО 001', 'РУКОПИСЬ ВОЙНИЧА'), trans_out=('tear', 6),
-        hooktext=(('ПОЧЕМУ ЕЁ', 'НЕЛЬЗЯ', 'ПРОЧИТАТЬ?'), 1))   # frame 0 asks the question (muted autoplay, thumbnail)
+        hooktext=(('ЭТУ КНИГУ', 'НЕ РАСШИФРОВАЛИ', 'ЗА 600 ЛЕТ'), 1))   # frame 0 asks the question (muted autoplay, thumbnail)
     seg('lab', None, line=(('vo_intro.mp3', 0.0, 2.13, 'Двести сорок *страниц…'), 0.15), hx=62,
         poses=[(0.0, 'front', False), ('страниц', 'point', False)], screen='s02_parchment', cam=(1.03, 1.10), teleport=0.4,
         tail=0.15, kin=[('Двести', 'count', 240, 'СТРАНИЦ')], inserts=[('страниц', 6.9, 0.30)], trans_out=('zoom', 6))
     seg('close', None, line=(('vo_intro.mp3', 2.40, 5.49, 'и ни одного… *прочитанного слова.'), 0.05), cam=(1.06, 1.18), tail=0.15,
-        kin=[('ни', 'big', '0', 'ПРОЧИТАННЫХ СЛОВ')], inserts=[('прочитанного', 11.6, 0.28)], trans_out=('flash', 4))
+        kin=[('ни', 'big', '0 %', 'РАСШИФРОВАНО')], inserts=[('прочитанного', 11.6, 0.28)], trans_out=('flash', 4))
     seg('reel', None, src=(8.9, 9.85), trans_out=('glyph', 6))
     seg('close', None, line=(('vo_written.mp3', 0.06, 3.3, 'Она *написана… *неизвестно *кем.'), 0.2), cam=(1.0, 1.25), tail=0.15,
         looks=[('написана', 1), ('неизвестно', -1), ('кем', 0)], kin=[('неизвестно', 'big', 'АВТОР: ???', None)], kin_y=60,
@@ -136,15 +136,15 @@ elif PART == 3:
     seg('lab', None, line=(('vo_narrator.mp3', 4.74, 8.07, 'В 1912-м{тысяча девятьсот двенадцатом} её *купили.'), 0.3), hx=118,
         walk=(36, 118, 0.0, 1.6), poses=[(0.0, 'front', False), ('её', 'point', True)], turn='её', screen='s09_tag',
         cam=(1.12, 1.03), tail=0.1, kin=[('1912', 'big', '1912', 'КУПИЛ ВОЙНИЧ')],
-        inserts=[('купили', 20.80, 0.48)], trans_out=('shutter', 6))
+        trans_out=('shutter', 6))   # the «LOT NO.» tag insert is gone: there was no auction (board fact-check)
     seg('reel', None, src=(22.55, 25.15), trans_out=('slice', 4))
     # «не смог» used to sit on the black tail of the swirl: cut to the empty reading desk (the reader is gone) + «0 %»
     seg('reel', None, src=(27.40, 29.55), over=[(1.14, 31.16, 1.01, 1.0, 1.10)],
         slams=[(1.20, '0 %', 'РАСШИФРОВАНО', 128, 0.95)])
     # «Буквы двигаются» -> the letters crawl: every grid row slides on a sine
     seg('reel', None, src=(42.55, 46.6), pip=True, crawl=(43.45, 44.54), trans_out=('blocks', 6))
-    seg('lean', 0.7, slams=[(0.0, 'ЗАГЛЯНЕМ ВНУТРЬ.', None, 52, 0.7)])
-    seg('dive', 1.2)
+    seg('lean', 0.5, slams=[(0.0, 'ЗАГЛЯНЕМ ВНУТРЬ.', None, 52, 0.5)])
+    seg('dive', 0.8)
     seg('reel', None, src=(47.467, 50.05), pip=True, trans_out=('slice', 4))
     seg('reel', None, src=(51.55, 54.25), pip=True, trans_out=('glyph', 4))
     # «то, чего нельзя видеть» -> the eye with the plant growing in its iris
@@ -461,13 +461,14 @@ def hook_text(rgb, sg, t):
     lines, key = ht
     pil = Image.fromarray(rgb); d = ImageDraw.Draw(pil); d.fontmode = '1'
     for n_, (s, y) in enumerate(zip(lines, (40, 59, 78))):
-        w = d.textlength(s, font=R.FCAP); x = int(round(84 - w / 2))
+        fnt = R.FCAP if d.textlength(s, font=R.FCAP) <= 140 else R.FCAP_S     # a long line steps down, never to the edge
+        w = d.textlength(s, font=fnt); x = int(round(84 - w / 2))
         if n_ == key:
             d.rectangle([x - 3, y + 1, x + w + 3, y + 17], fill=R.RGB['red'])
         else:
             for ox, oy in ((-1, 0), (1, 0), (0, -1), (0, 1), (1, 1)):
-                d.text((x + ox, y + oy), s, font=R.FCAP, fill=R.RGB['void'])
-        d.text((x, y), s, font=R.FCAP, fill=R.RGB['bone'])
+                d.text((x + ox, y + oy), s, font=fnt, fill=R.RGB['void'])
+        d.text((x, y + (1 if fnt is R.FCAP_S else 0)), s, font=fnt, fill=R.RGB['bone'])
     return np.array(pil)
 
 
@@ -787,6 +788,7 @@ def text_layer(t, f):
             rgb = slam(rgb, t, sg['t0'] + st, big, small, y=y, life=life, f=f)
         if sg.get('idplate') is not None:
             rgb = id_plate(rgb, tl - sg['idplate'])
+        rgb = recon_tag(rgb, 94 if sg.get('idplate') is not None else 38)
         return cap(rgb, R.caption_at(sg['src'][0] + tl))
     if k == 'card':                                           # above the camera, so the zoom never crops the words
         rgb = np.zeros((GH, GW, 3), np.uint8); rgb[:] = KEY
@@ -819,6 +821,15 @@ def text_layer(t, f):
 
 
 CAP_BOX = None
+
+
+def recon_tag(rgb, y):
+    """a small honest label over the reel's AI-made footage: «РЕКОНСТРУКЦИЯ · ИИ»"""
+    pil = Image.fromarray(rgb); d = ImageDraw.Draw(pil); d.fontmode = '1'
+    s_ = 'РЕКОНСТРУКЦИЯ · ИИ'
+    w = d.textlength(s_, font=R.F7)
+    d.rectangle([6, y, 6 + w + 4, y + 9], fill=R.RGB['void2']); d.text((8, y + 1), s_, font=R.F7, fill=R.RGB['line'])
+    return np.array(pil)
 
 
 def id_plate(rgb, k):

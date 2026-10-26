@@ -12,7 +12,7 @@
 
 ## 0. Факты (сверены с первоисточником)
 
-**Первоисточник:** Huberty M. S., Scarlata C., Henry A., Berg D. A., … Young A. (16 авторов).
+**Первоисточник:** Huberty M. S., Scarlata C., Hayes M. J., Henry A., Berg D. A., … Young A. R. (16 авторов; порядок сверен по research.chalmers.se/publication/554206, ApJ 1009(2), статья 117).
 *A Single Line Emitter Identified in an Unbiased Search with JWST/NIRSpec: Multiobject Coronagraphy for Slitless Spectroscopy.*
 The Astrophysical Journal **1009** (2), 2026. DOI [10.3847/1538-4357/ae9a94](https://doi.org/10.3847/1538-4357/ae9a94).
 Полный текст лежит в открытом репозитории Chalmers: https://research.chalmers.se/publication/554206 (страница IOP закрыта для ботов).

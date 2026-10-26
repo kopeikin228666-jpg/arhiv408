@@ -633,7 +633,7 @@ def draw_caption(rgb, cap, t):
             else:
                 for ox, oy in ((-1, 0), (1, 0), (0, -1), (0, 1), (1, 1)):
                     d.text((x + ox, yy + oy), w, font=font, fill=RGB['void'])
-                d.text((x, yy), w, font=font, fill=base if said else RGB['mid'])
+                d.text((x, yy), w, font=font, fill=base if said else RGB['line'])
             x += ww + d.textlength(' ', font=font)
         y += lh
     return np.array(pil)
