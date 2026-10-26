@@ -704,7 +704,9 @@ function drawVans(dt){
     if(T>=3&&T<8.6){
       cx.save();cx.translate(vx,gy);cx.scale(2,2);victim(0,0,T,mode);
       const ph=(T*6|0)%3,chase=T<4.6;const off=chase?18:0;
-      kicker(9+off,-20,'#3a0f0c',!chase&&ph===0,-1);kicker(18+off,-21,'#5a0f2a',!chase&&ph===1,-1);kicker(-16+(chase?40:0),-20,'#141618',!chase&&ph===2,1);kicker(3+off,-34,'#c99a3c',!chase&&(ph+1)%3===0,-1);
+      if(v.bouncer){cx.save();cx.translate(12+off,-34);cx.scale(1.8,1.8);kicker(0,0,'#0b0b0b',!chase&&ph!==1,-1);px(-1,6,8,2,'#c9c9c9');cx.restore();
+        if(!chase){px(4+off,-58,40,9,'#ba302a');cx.fillStyle='#fff';cx.font='bold 7px monospace';cx.textBaseline='top';cx.fillText('ВЫШИБАЛА',6+off,-57)}}
+      else{kicker(9+off,-20,'#3a0f0c',!chase&&ph===0,-1);kicker(18+off,-21,'#5a0f2a',!chase&&ph===1,-1);kicker(-16+(chase?40:0),-20,'#141618',!chase&&ph===2,1);kicker(3+off,-34,'#c99a3c',!chase&&(ph+1)%3===0,-1);}
       if(!chase&&T>=6&&ph!==1){px(-12,-48,26,9,'#e8c45a');cx.fillStyle='#ba302a';cx.font='bold 7px monospace';cx.textBaseline='top';cx.fillText(['ПИНОК!','НА!','ХУЯК!'][(T*3|0)%3],-11,-47)}
       cx.restore();
       if(yell){cx.fillStyle='#fff';cx.font='bold 9px monospace';cx.textBaseline='top';const w=cx.measureText(yell).width;px(vx-w/2-3,gy-104,w+6,13,'#141716');cx.fillStyle='#ff6a5a';cx.fillText(yell,vx-w/2,gy-102)}
@@ -712,7 +714,7 @@ function drawVans(dt){
     if(T>=8.6&&T<9.9){const k=(T-8.6)/1.3,ex=door,ax=vx+(ex-vx)*k,ay=gy-20-Math.sin(k*Math.PI)*60+k*6;
       cx.save();cx.translate(ax,ay);cx.rotate(T*10);cx.scale(2,2);victim(0,9,T,'flail');cx.restore()}
     cx.restore();
-    if(T>=3&&T<11){cx.fillStyle='#ba302a';cx.font='bold 11px monospace';cx.textBaseline='top';cx.fillText(v.name+' — нахуй из офиса',STOP-10,y-58)}
+    if(T>=3&&T<11){cx.fillStyle='#ba302a';cx.font='bold 11px monospace';cx.textBaseline='top';cx.fillText(v.name+(v.bouncer?' — второй шанс проёбан. БОЛЬШЕ НЕ ПРИХОДИ':' — нахуй из офиса'),STOP-10,y-58)}
   }
   vans=vans.filter(v=>v.t<14);
 }
@@ -803,7 +805,7 @@ function renderAppr(){
     if(!d){p.textContent='Сейчас в офисе тихо.';return}
     p.append(el('strong',null,d.phase||''));if(d.detail)p.append(document.createTextNode(' · '+d.detail));
   },()=>{});
-  db.collection('agents').orderBy('order').onSnapshot(s=>{const all=s.docs.map(d=>Object.assign({_id:d.id},d.data()));agents=all.filter(a=>a.status!=='fired');fired=all.filter(a=>a.status==='fired');fired.forEach(f=>{if(seenFired.has(f._id))return;seenFired.add(f._id);if(Date.now()-(f.firedAt||0)<180000)vans.push({name:f.name||'агент',t:0})});renderFired();sync();renderPanels();renderShame();renderChat();renderHonor()},()=>{});
+  db.collection('agents').orderBy('order').onSnapshot(s=>{const all=s.docs.map(d=>Object.assign({_id:d.id},d.data()));agents=all.filter(a=>a.status!=='fired');fired=all.filter(a=>a.status==='fired');fired.forEach(f=>{if(seenFired.has(f._id))return;seenFired.add(f._id);if(Date.now()-(f.firedAt||0)<180000)vans.push({name:f.name||'агент',t:0,bouncer:!!f.returned})});renderFired();sync();renderPanels();renderShame();renderChat();renderHonor()},()=>{});
   db.collection('reprimands').orderBy('at','desc').limit(30).onSnapshot(s=>{
     reprimands=s.docs.map(d=>Object.assign({_id:d.id},d.data()));
     if(firstRep){reprimands.slice(1).forEach(r=>seenRep.add(r._id));firstRep=false}
