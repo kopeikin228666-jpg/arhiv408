@@ -212,6 +212,11 @@ const COFFEE=[310,68],WATER=[338,92];
 const PATROL=[[14,AISLE],[160,AISLE],[300,AISLE],[200,206],[60,206],[110,AISLE]];   // the overseer never leaves the studio
 const D_PATROL=[[530,AISLE],[400,AISLE],[400,206],[520,206],[470,AISLE]];
 const BOSS={overseer:1,demoness:1,deputy:1};
+const YELL_BY={
+ overseer:['Это что за хуйня в монтаже?!','Палитру кто проебал, блядь?','Текст на HUD опять, сука! Переделать!','Ещё раз — и машина, понял?','Хули ты пялишься? Рендер где?','Безопасные зоны, блядь, для кого придуманы?!'],
+ demoness:['Ты это серьёзно постить собрался? Убожество.','Факт где, сладкий? Без источника — на СВО.','Крючок дохлый, переписывай, бестолочь.','Ещё одна «нейросеть» в подписи — и я тебя съем.','Хэштеги кто так ставит, блядь?'],
+ qc:['8,5 из 10, блядь! Ниже — не принимаю!','Это заставка, а не ролик. Переделать нахуй!','Где 408? Почему крошечный?!','Статичный кадр больше 3 секунд. Позор.'],
+ factcop:['Источник, блядь! Где источник?!','«Заплатил»? Тестовыми монетами, сука!','Не раздувай факты, а то поедешь за арт-директором.','Пересказ — не первоисточник, ёб твою мать!']};
 const DEP_PATROL=[[640,AISLE],[560,AISLE],[450,AISLE],[400,206],[300,AISLE],[160,AISLE],[60,206],[200,206],[338,AISLE]];
 const YELLS=['Хули сидим?! Работать, блядь!','Покажи, что сделал за час. Нихуя? Я так и думал.','Это что за хуйня? 8,5 из 10 или на СВО!','Надзиратель, ты сам-то, блядь, проверял?!','Демоница, разносы раздаёшь, а сама нихуя не проверила!','Статус обнови, ёб твою мать!','Источник где, блядь? Покажи источник!','Машина «НА СВО» уже заводится, сука…','Кофе, блядь? Какой нахуй кофе?!','ОТК, не спать, блядь! Кто следующий?','Айтишник, бот где, блядь?','Двигай жопой, дедлайн горит!','Ещё один косяк — и поедешь на СВО, понял?','Ты на карандаше, блядь. Второе предупреждение — машина.','Хорошо сделаешь — на доску почёта. Хуёво — сам знаешь куда.','Режиссёр, у тебя уже 1 из 2. Не проеби v3!'];
 const WANDER=[[60,AISLE],[180,AISLE],[400,AISLE],[500,AISLE],[120,206],[450,206]];
@@ -522,10 +527,13 @@ function step(dt){
     let act=actives[boss._id];
     if(!act&&reprimands.length){const r=reprimands.find(r=>!seenRep.has(r._id)&&bossFor(r)===boss);if(r){seenRep.add(r._id);const tgt=agents.find(a=>a._id===r.target);const ts=tgt&&sprites[tgt._id];
       if(ts){act=actives[boss._id]={target:tgt._id,text:r.text,phase:'walk',t:0};route(bs,ts.x+(ts.x>W/2?-14:14),ts.y)}}}
-    if(!act&&boss.kind==='deputy'){bs.yellIn=(bs.yellIn??3)-dt;if(bs.yellIn<=0){bs.yellIn=6+Math.random()*6;const pool=agents.filter(a=>a._id!==boss._id&&a.order!==0);const tgt=pool[(Math.random()*pool.length)|0];const ts=tgt&&sprites[tgt._id];if(ts){act=actives[boss._id]={target:tgt._id,text:YELLS[(Math.random()*YELLS.length)|0],phase:'walk',t:0};route(bs,ts.x+(ts.x>W/2?-14:14),ts.y)}}}
+    if(!act){bs.yellIn=(bs.yellIn??(2+Math.random()*6))-dt;if(bs.yellIn<=0){bs.yellIn=(boss.kind==='deputy'?6:9)+Math.random()*7;
+      const pool=agents.filter(a=>a._id!==boss._id&&a.order!==0&&(boss.kind==='overseer'&&(boss._id==='overseer')?(!a.room||a.room==='studio'):boss.kind==='demoness'?a.room==='insta':true));
+      const tgt=pool[(Math.random()*pool.length)|0];const ts=tgt&&sprites[tgt._id];const L=YELL_BY[boss._id]||YELL_BY[boss.kind]||YELLS;
+      if(ts){act=actives[boss._id]={target:tgt._id,text:L[(Math.random()*L.length)|0],phase:'walk',t:0,slap:Math.random()<.5};route(bs,ts.x+(ts.x>W/2?-14:14),ts.y)}}}
     if(act){if(act.phase==='walk'&&!bs.way.length){act.phase='scold';act.t=0}
       if(act.phase==='scold'){act.t+=dt;if(act.t>(boss.kind==='deputy'?3.5:7))delete actives[boss._id]}}
-    else if(!bs.way.length){const P=boss.kind==='demoness'?D_PATROL:boss.kind==='deputy'?DEP_PATROL:PATROL;bs.pause=(bs.pause||0)-dt;if(bs.pause<=0){bs.patrolK=((bs.patrolK||0)+1)%P.length;const p=P[bs.patrolK];route(bs,p[0],p[1]);bs.pause=1.2+Math.random()*2.5}}
+    else if(!bs.way.length){const P=boss.kind==='demoness'?D_PATROL:(boss.kind==='deputy'||boss._id==='qc'||boss._id==='factcop')?DEP_PATROL:PATROL;bs.pause=(bs.pause||0)-dt;if(bs.pause<=0){bs.patrolK=((bs.patrolK||0)+1)%P.length;const p=P[bs.patrolK];route(bs,p[0],p[1]);bs.pause=1.2+Math.random()*2.5}}
     move(bs,dt,boss.kind==='demoness'?26:boss.kind==='deputy'?44:30);
   }
   for(const a of agents){const s=sprites[a._id];if(!s||BOSS[a.kind])continue;
@@ -548,6 +556,7 @@ function loop(now){
   I_DESKS.forEach((d,i)=>desk(d,i,agents.find(a=>a.room==='insta'&&(a.seat??-1)===i),t,false,true));
   [...agents].filter(a=>sprites[a._id]).sort((a,b)=>sprites[a._id].y-sprites[b._id].y).forEach(a=>hooded(sprites[a._id],a,t));
   cabinetDesk(t);drawVans(dt);
+  for(const [bid,v] of Object.entries(actives)){if(!v||v.phase!=='scold'||!v.slap)continue;const ts=sprites[v.target];if(!ts)continue;if(((v.t*6)|0)%3===0){px(ts.x-9,ts.y-30,18,9,'#e8c45a');cx.fillStyle='#ba302a';cx.font='bold 7px monospace';cx.textBaseline='top';cx.fillText('БАЦ!',ts.x-8,ts.y-29)}}
   cx.setTransform(1,0,0,1,0,0);
   bubble(now);
   requestAnimationFrame(loop);
