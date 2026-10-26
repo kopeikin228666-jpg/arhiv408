@@ -112,6 +112,11 @@ footer{color:var(--dim);font-size:12px}
 .lib .it{background:var(--panel);border:1px solid var(--line);padding:10px;display:grid;gap:8px}
 .lib .it .t{font-size:14px;font-weight:600}
 .lib .it .mt{font-size:12px;color:var(--dim)}
+.carpet{background:#0f0a07;border:2px solid #6a3a12;padding:12px;display:grid;gap:8px}
+.carpet .c{background:var(--panel);border:1px solid var(--line);border-left:3px solid var(--amber);padding:9px 10px;display:grid;gap:4px;font-size:13px}
+.carpet .c.fired{border-left-color:var(--red)} .carpet .c.keep{border-left-color:var(--green)}
+.carpet .c .h{font-weight:600} .carpet .c .m{color:var(--dim);font-size:12px}
+.carpet .c .v{font-family:var(--f-pix);font-size:8px;letter-spacing:.08em}
 </style>
 
 <div class="wrap">
@@ -163,6 +168,11 @@ footer{color:var(--dim);font-size:12px}
     <div id="appr"><p class="empty">Пока вопросов нет.</p></div>
   </section>
 
+  <section class="carpet">
+    <h2>НА КОВРЕ У ДИРЕКТОРА · ОТЧИТЫВАЮТСЯ И ЖДУТ РЕШЕНИЯ</h2>
+    <div id="carpet"><p class="empty">Пока никого не вызывали.</p></div>
+  </section>
+
   <section class="shame">
     <h2>ДОСКА ПОЗОРА · НАДЗИРАТЕЛЬ И ДЕМОНИЦА</h2>
     <div class="tally" id="tally"></div>
@@ -192,7 +202,9 @@ const SEATS=[[230,164],[252,164],[274,164],[296,164],[230,196],[252,196],[274,19
 const COFFEE=[310,68],WATER=[338,92];
 const PATROL=[[14,AISLE],[160,AISLE],[300,AISLE],[200,206],[60,206],[110,AISLE]];   // the overseer never leaves the studio
 const D_PATROL=[[530,AISLE],[400,AISLE],[400,206],[520,206],[470,AISLE]];
-const BOSS={overseer:1,demoness:1};
+const BOSS={overseer:1,demoness:1,deputy:1};
+const DEP_PATROL=[[640,AISLE],[560,AISLE],[450,AISLE],[400,206],[300,AISLE],[160,AISLE],[60,206],[200,206],[338,AISLE]];
+const YELLS=['Почему стоим?! Работать!','Покажи, что сделал за час. Сейчас.','Это что, 8,5 из 10? Переделать!','Надзиратель, ты сам-то проверял?!','Демоница, разнос раздаёшь — а сама?','Статус обнови, живо!','Факты где? Источник покажи!','Машина «НА СВО» уже заводится…','Кофе потом. Сначала ролик.','ОТК, не спи! Кто следующий на проверку?'];
 const WANDER=[[60,AISLE],[180,AISLE],[400,AISLE],[500,AISLE],[120,206],[450,206]];
 let agents=[],sprites={},prev={},selected=null,t0=performance.now(),bubbleFor=null,bubbleT=0;
 let reprimands=[],actives={},active=null,seenRep=new Set(),firstRep=true,view='all',vx0=0,vx1=W,hearts=[];
@@ -210,6 +222,7 @@ function deskOf(a,i){
 function seatFor(a,i){
   if(a.kind==='overseer')return {x:14+(a._id==='overseer'?0:a._id==='qc'?24:48),y:AISLE};
   if(a.kind==='demoness')return {x:530,y:AISLE};
+  if(a.kind==='deputy')return {x:C_DESK[0]+64,y:C_DESK[1]+36};
   if(a.status==='board'){const k=agents.filter(b=>b.status==='board').indexOf(a);const s=SEATS[k%SEATS.length];return {x:s[0],y:s[1]}}
   if(a.visit){const t=agents.find(b=>b._id===a.visit);if(t&&t!==a){if(t.room==='cabinet')return {x:C_DESK[0]+40,y:C_DESK[1]+50,visiting:t._id};const d=deskOf(t,agents.indexOf(t));return {x:d[0]+34,y:d[1]+28,visiting:t._id}}}
   if(a.room==='cabinet'&&a.order!==0)return {x:C_DESK[0]+64,y:C_DESK[1]+36};
@@ -426,10 +439,23 @@ function director(s,a,t){
   if(st==='done'&&!walking){px(x+12,y-5,1,1,'#5fa77a');px(x+13,y-4,1,1,'#5fa77a');px(x+14,y-7,1,3,'#5fa77a')}
   s.sx=x+5;s.sy=y-8;
 }
+function deputy(s,a,t){
+  const walking=s.way.length>0,bob=walking?((t/90|0)%2):0;
+  const act=actives[a._id],x=Math.round(s.x)-5,y=Math.round(s.y)-21+bob,angry=act&&act.phase==='scold',dir=s.dir||1;
+  if(selected===a._id){cx.strokeStyle='#e2dbc8';cx.lineWidth=1;cx.strokeRect(x-3.5,y-5.5,17,30)}
+  px(x+2,y-1,6,2,'#1a1a1a');px(x+2,y+1,6,5,'#c99a7a');px(x+3,y+3,1,1,'#000');px(x+6,y+3,1,1,'#000');px(x+3,y+5,4,1,angry?'#5a1010':'#8a5a4a');
+  px(x,y+6,10,13,'#141618');px(x+4,y+6,2,6,'#e2dbc8');px(x+4,y+7,2,5,'#ba302a');
+  px(x+(dir>0?10:-3),y+8,3,2,'#141618');
+  if(angry){const mx=x+(dir>0?12:-8);px(mx,y+6,4,5,'#c99a3c');px(mx+(dir>0?4:-2),y+5,2,7,'#c99a3c');
+    if((t/120|0)%2){px(mx+(dir>0?8:-6),y+4,2,1,'#ba302a');px(mx+(dir>0?9:-7),y+8,2,1,'#ba302a');px(mx+(dir>0?8:-6),y+12,2,1,'#ba302a')}}
+  if(walking){const k=(t/90|0)%2;px(x+1,y+19,3,2+k,'#0a0c0b');px(x+6,y+19,3,3-k,'#0a0c0b')}else px(x+1,y+19,8,2,'#0a0c0b');
+  s.sx=x+5;s.sy=y-3;
+}
 function hooded(s,a,t){
   if(a.order===0&&!BOSS[a.kind])return director(s,a,t);
   if(a.kind==='overseer')return overseer(s,a,t);
   if(a.kind==='demoness')return demoness(s,a,t);
+  if(a.kind==='deputy')return deputy(s,a,t);
   const st=a.status||'idle',walking=s.way.length>0;
   const shake=Object.values(actives).some(v=>v&&v.phase==='scold'&&v.target===a._id)?((t/40|0)%2?1:-1):0;
   const bob=walking?((t/120|0)%2):(st==='working'?((t/400|0)%2):0);
@@ -464,14 +490,15 @@ function step(dt){
     let act=actives[boss._id];
     if(!act&&reprimands.length){const r=reprimands.find(r=>!seenRep.has(r._id)&&bossFor(r)===boss);if(r){seenRep.add(r._id);const tgt=agents.find(a=>a._id===r.target);const ts=tgt&&sprites[tgt._id];
       if(ts){act=actives[boss._id]={target:tgt._id,text:r.text,phase:'walk',t:0};route(bs,ts.x+(ts.x>W/2?-14:14),ts.y)}}}
+    if(!act&&boss.kind==='deputy'){bs.yellIn=(bs.yellIn??3)-dt;if(bs.yellIn<=0){bs.yellIn=6+Math.random()*6;const pool=agents.filter(a=>a._id!==boss._id&&a.order!==0);const tgt=pool[(Math.random()*pool.length)|0];const ts=tgt&&sprites[tgt._id];if(ts){act=actives[boss._id]={target:tgt._id,text:YELLS[(Math.random()*YELLS.length)|0],phase:'walk',t:0};route(bs,ts.x+(ts.x>W/2?-14:14),ts.y)}}}
     if(act){if(act.phase==='walk'&&!bs.way.length){act.phase='scold';act.t=0}
-      if(act.phase==='scold'){act.t+=dt;if(act.t>7)delete actives[boss._id]}}
-    else if(!bs.way.length){const P=boss.kind==='demoness'?D_PATROL:PATROL;bs.pause=(bs.pause||0)-dt;if(bs.pause<=0){bs.patrolK=((bs.patrolK||0)+1)%P.length;const p=P[bs.patrolK];route(bs,p[0],p[1]);bs.pause=1.2+Math.random()*2.5}}
-    move(bs,dt,boss.kind==='demoness'?26:30);
+      if(act.phase==='scold'){act.t+=dt;if(act.t>(boss.kind==='deputy'?3.5:7))delete actives[boss._id]}}
+    else if(!bs.way.length){const P=boss.kind==='demoness'?D_PATROL:boss.kind==='deputy'?DEP_PATROL:PATROL;bs.pause=(bs.pause||0)-dt;if(bs.pause<=0){bs.patrolK=((bs.patrolK||0)+1)%P.length;const p=P[bs.patrolK];route(bs,p[0],p[1]);bs.pause=1.2+Math.random()*2.5}}
+    move(bs,dt,boss.kind==='demoness'?26:boss.kind==='deputy'?44:30);
   }
   for(const a of agents){const s=sprites[a._id];if(!s||BOSS[a.kind])continue;
     if(s.errand&&!s.way.length){s.errandT-=dt;if(s.errandT<=0){if(s.errand==='coffee')s.cup=true;s.errand=null;route(s,s.goal.x,s.goal.y)}}
-    if(!s.errand&&!s.way.length&&!REDUCED&&(a.status==='done'||a.status==='idle')){s.breakAt=(s.breakAt??(5+Math.random()*10))-dt;
+    if(false){s.breakAt=(s.breakAt??(5+Math.random()*10))-dt;
       if(s.breakAt<=0){s.breakAt=14+Math.random()*16;const r=Math.random();
         if(r<.45){s.errand='coffee';s.errandT=2.5;route(s,COFFEE[0]-6,COFFEE[1]+14)}
         else if(r<.75){s.errand='water';s.errandT=2;route(s,WATER[0]+2,WATER[1]+14)}
@@ -557,20 +584,35 @@ function renderShame(){
 }
 
 let approvals=[],DB=null;
+let summons=[];
+function renderCarpet(){const b=document.getElementById('carpet');
+  if(!summons.length){b.replaceChildren(el('p','empty','Пока никого не вызывали.'));return}
+  b.replaceChildren(...summons.map(x=>{const a=agents.find(g=>g._id===x.agent)||fired.find(g=>g._id===x.agent);const c=el('div','c'+(x.verdict==='fired'?' fired':x.verdict==='keep'?' keep':''));
+    c.append(el('div','h',(x.time||'')+' · '+((a&&a.name)||x.agent)+' — вызван к директору'));
+    if(x.by)c.append(el('div','m','Вызвал: '+(nameOf(x.by)||x.by)+' · Причина: '+(x.reason||'')));
+    if(x.explanation)c.append(el('div',null,'Объяснение: «'+x.explanation+'»'));
+    c.append(el('div','v '+(x.verdict==='fired'?'board':x.verdict==='keep'?'done':'working'),x.verdict==='fired'?'РЕШЕНИЕ: НА СВО':x.verdict==='keep'?'РЕШЕНИЕ: РАБОТАЕТ ДАЛЬШЕ'+(x.warning?' · '+x.warning:''):'ОТЧИТЫВАЕТСЯ…'));
+    if(x.decision)c.append(el('div','m','Директор: '+x.decision));return c}))}
+
 let fired=[],seenFired=new Set(),vans=[];
 function renderFired(){const b=document.getElementById('firedList');if(!b)return;
   if(!fired.length){b.replaceChildren(el('li','empty','Пока никого. Работайте нормально — и не будет.'));return}
   b.replaceChildren(...fired.map(f=>{const li=el('li');li.append(el('span',null,(f.firedTime||'')+' · '+(f.name||f._id)+': '),document.createTextNode(f.firedWhy||'выкинут по решению надзирателей'));return li}))}
 function drawVans(dt){
-  for(const v of vans){v.t+=dt;const x=W+30-v.t*70,y=H-34;
-    if(v.t>2.4&&v.t<4.2&&!v.loaded){/* stop at the door */}
-    const X=v.t<3?x:(v.t<5?W+30-3*70:W+30-3*70-(v.t-5)*90);
-    px(X,y,52,18,'#121513');px(X,y+6,52,3,'#ba302a');px(X+52,y+6,12,12,'#121513');px(X+55,y+8,7,5,'#3a4a52');
-    px(X+6,y+18,7,5,'#050605');px(X+40,y+18,7,5,'#050605');px(X+52,y+18,7,5,'#050605');
-    cx.fillStyle='#e7dcc5';cx.font='6px monospace';cx.font='bold 8px monospace';cx.fillText('НА СВО',X+9,y+15.5);
-    if(v.t>=3&&v.t<5){const k=Math.min(1,(v.t-3)/1.2),ax=X+90-k*64,ay=y-4-Math.sin(k*Math.PI)*34;px(ax,ay,6,8,'#2a2f2c');px(ax+1,ay+2,1,1,'#ba302a');px(ax+4,ay+2,1,1,'#ba302a');px(ax-2,ay+3,2,1,'#2a2f2c');px(ax+6,ay+1,2,1,'#2a2f2c');cx.fillStyle='#ba302a';cx.font='7px monospace';cx.fillText(v.name+' — нахуй из офиса',X-10,y-10)}
+  for(const v of vans){v.t+=dt;const STOP=W-300,y=H-52;
+    const X=v.t<3?W+20-(v.t/3)*(W+20-STOP):(v.t<6?STOP:STOP-(v.t-6)*(v.t-6)*60);
+    cx.save();cx.translate(X|0,y);cx.scale(2,2);
+    px(0,0,54,18,'#141716');px(0,6,54,2,'#ba302a');px(54,5,13,13,'#141716');px(57,7,8,6,'#3a4a52');px(66,13,2,3,'#c99a3c');
+    px(5,18,8,6,'#050605');px(7,20,4,2,'#3a3f3c');px(41,18,8,6,'#050605');px(43,20,4,2,'#3a3f3c');px(55,18,8,6,'#050605');px(57,20,4,2,'#3a3f3c');
+    if(v.t>=3&&v.t<5.6)px(30,1,16,16,'#050605');
+    cx.fillStyle='#e7dcc5';cx.font='bold 9px monospace';cx.textBaseline='top';cx.fillText('НА СВО',6,8);
+    if(v.t>6&&((v.t*8|0)%2))px(-6,12,5,3,'#5d6662');
+    cx.restore();
+    if(v.t>=3.3&&v.t<5.3){const k=Math.min(1,(v.t-3.3)/1.4),sx=STOP+190,ex=X+74,ax=sx+(ex-sx)*k,ay=y-6-Math.sin(k*Math.PI)*46+k*20,r=(v.t*9)%6;
+      cx.save();cx.translate(ax,ay);cx.rotate(r);px(-5,-9,10,18,'#2a2f2c');px(-3,-6,2,1,'#ba302a');px(1,-6,2,1,'#ba302a');px(-8,-4,3,2,'#2a2f2c');px(5,-2,3,2,'#2a2f2c');cx.restore()}
+    if(v.t>=3&&v.t<6.5){cx.fillStyle='#ba302a';cx.font='bold 10px monospace';cx.textBaseline='top';cx.fillText(v.name+' — нахуй из офиса',STOP-10,y-40)}
   }
-  vans=vans.filter(v=>v.t<12);
+  vans=vans.filter(v=>v.t<10);
 }
 
 let media=[];
@@ -651,6 +693,7 @@ function renderAppr(){
   db.collection('tasks').orderBy('order').onSnapshot(s=>{tasks=s.docs.map(d=>Object.assign({_id:d.id},d.data()));renderBoard()},()=>{});
   db.doc('meta/goal').onSnapshot(s=>{goal=s.exists?s.data():null;renderBoard()},()=>{});
   db.collection('media').orderBy('order','desc').onSnapshot(s=>{media=s.docs.map(d=>Object.assign({_id:d.id},d.data()));renderLib()},()=>{});
+  db.collection('summons').orderBy('at','desc').limit(20).onSnapshot(s=>{summons=s.docs.map(d=>Object.assign({_id:d.id},d.data()));renderCarpet()},()=>{});
   db.collection('approvals').orderBy('num').onSnapshot(s=>{approvals=s.docs.map(d=>Object.assign({_id:d.id},d.data()));renderAppr()},()=>{});
   db.doc('meta/now').onSnapshot(s=>{
     const d=s.exists?s.data():null,p=document.getElementById('phase');p.replaceChildren();
