@@ -206,7 +206,7 @@ function deskOf(a,i){
   return S_DESKS[(a.order??i)%S_DESKS.length];
 }
 function seatFor(a,i){
-  if(a.kind==='overseer')return {x:14,y:AISLE};
+  if(a.kind==='overseer')return {x:14+(a._id==='overseer'?0:a._id==='qc'?24:48),y:AISLE};
   if(a.kind==='demoness')return {x:530,y:AISLE};
   if(a.status==='board'){const k=agents.filter(b=>b.status==='board').indexOf(a);const s=SEATS[k%SEATS.length];return {x:s[0],y:s[1]}}
   if(a.visit){const t=agents.find(b=>b._id===a.visit);if(t&&t!==a){if(t.room==='cabinet')return {x:C_DESK[0]+40,y:C_DESK[1]+50,visiting:t._id};const d=deskOf(t,agents.indexOf(t));return {x:d[0]+34,y:d[1]+28,visiting:t._id}}}
@@ -452,6 +452,7 @@ function hooded(s,a,t){
 function move(s,dt,speed){if(!s.way.length)return;const [gx,gy]=s.way[0],d=Math.hypot(gx-s.x,gy-s.y),v=speed*dt;
   if(Math.abs(gx-s.x)>.5)s.dir=gx>s.x?1:-1;if(d<=v){s.x=gx;s.y=gy;s.way.shift()}else{s.x+=(gx-s.x)/d*v;s.y+=(gy-s.y)/d*v}}
 function bossFor(r){            // each boss works only in her or his own department
+  if(r.by){const b=agents.find(a=>a._id===r.by&&BOSS[a.kind]);if(b)return b}
   const tg=agents.find(a=>a._id===r.target);const want=tg&&tg.room==='insta'?'demoness':'overseer';
   return agents.find(a=>a.kind===want);
 }
